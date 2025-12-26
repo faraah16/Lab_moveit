@@ -1,0 +1,21 @@
+material StartStopZone
+{
+  technique
+  {
+    pass
+    {
+      lighting off
+      ambient 1 1 1 1
+      diffuse 1 1 1 1
+      emissive 1 1 1 1
+
+      texture_unit
+      {
+        texture start_stop_zone_no_alpha.png
+        filtering anisotropic
+        max_anisotropy 16
+      }
+    }
+  }
+}
+

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <!-- Lancer Gazebo avec le world de l'entrepôt -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find my_gazebo_world)/worlds/warehouse2_v1.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- Charger le robot URDF comme paramètre -->
+  <param name="robot_description" 
+         command="cat $(find my_gazebo_world)/urdf/warehouse_environment.urdf"/>
+
+  <!-- Spawner le robot dans Gazebo -->
+  <node name="spawn_warehouse_robot" 
+        pkg="gazebo_ros" 
+        type="spawn_model" 
+        args="-urdf -param robot_description -model warehouse_robot -x 0.5 -y 0.5 -z 0"
+        output="screen"/>
+
+  <!-- Publier les états des joints -->
+  <node name="robot_state_publisher" 
+        pkg="robot_state_publisher" 
+        type="robot_state_publisher"/>
+
+  <!-- Publier les états des joints pour contrôle -->
+  <node name="joint_state_publisher" 
+        pkg="joint_state_publisher" 
+        type="joint_state_publisher">
+    <param name="use_gui" value="true"/>
+  </node>
+
+</launch>

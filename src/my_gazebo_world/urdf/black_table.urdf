@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<robot name="black_table">
+  
+  <!-- Table Top -->
+  <link name="table_top">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.8 0.5 0.02"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.15 0.15 0.15 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.8 0.5 0.02"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="5.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.104" ixy="0.0" ixz="0.0" iyy="0.267" iyz="0.0" izz="0.37"/>
+    </inertial>
+  </link>
+
+  <!-- Leg 1 (Front Left) -->
+  <link name="leg1">
+    <visual>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.15 0.15 0.15 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <inertia ixx="0.013" ixy="0.0" ixz="0.0" iyy="0.013" iyz="0.0" izz="0.0003"/>
+    </inertial>
+  </link>
+
+  <joint name="leg1_joint" type="fixed">
+    <parent link="table_top"/>
+    <child link="leg1"/>
+    <origin xyz="0.35 0.21 -0.01" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Leg 2 (Front Right) -->
+  <link name="leg2">
+    <visual>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.15 0.15 0.15 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <inertia ixx="0.013" ixy="0.0" ixz="0.0" iyy="0.013" iyz="0.0" izz="0.0003"/>
+    </inertial>
+  </link>
+
+  <joint name="leg2_joint" type="fixed">
+    <parent link="table_top"/>
+    <child link="leg2"/>
+    <origin xyz="0.35 -0.21 -0.01" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Leg 3 (Back Left) -->
+  <link name="leg3">
+    <visual>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.15 0.15 0.15 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <inertia ixx="0.013" ixy="0.0" ixz="0.0" iyy="0.013" iyz="0.0" izz="0.0003"/>
+    </inertial>
+  </link>
+
+  <joint name="leg3_joint" type="fixed">
+    <parent link="table_top"/>
+    <child link="leg3"/>
+    <origin xyz="-0.35 0.21 -0.01" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Leg 4 (Back Right) -->
+  <link name="leg4">
+    <visual>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.15 0.15 0.15 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.04 0.4"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="1.0"/>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <inertia ixx="0.013" ixy="0.0" ixz="0.0" iyy="0.013" iyz="0.0" izz="0.0003"/>
+    </inertial>
+  </link>
+
+  <joint name="leg4_joint" type="fixed">
+    <parent link="table_top"/>
+    <child link="leg4"/>
+    <origin xyz="-0.35 -0.21 -0.01" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Support Frame -->
+  <link name="support_frame">
+    <visual>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7 0.42 0.03"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.15 0.15 0.15 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7 0.42 0.03"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="2.0"/>
+      <origin xyz="0 0 -0.2" rpy="0 0 0"/>
+      <inertia ixx="0.024" ixy="0.0" ixz="0.0" iyy="0.082" iyz="0.0" izz="0.106"/>
+    </inertial>
+  </link>
+
+  <joint name="support_frame_joint" type="fixed">
+    <parent link="table_top"/>
+    <child link="support_frame"/>
+    <origin xyz="0 0 -0.01" rpy="0 0 0"/>
+  </joint>
+
+</robot>

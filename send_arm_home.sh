@@ -1,0 +1,8 @@
+#!/bin/bash
+sleep 5
+ros2 topic pub --once /arm_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory "{
+  joint_names: ['shoulder_pan_joint', 'shoulder_lift_joint', 'elbow_joint', 'wrist_1_joint', 'wrist_2_joint', 'wrist_3_joint'],
+  points: [
+    {positions: [0.0, -1.57, 1.57, 0.0, -1.57, 0.0], time_from_start: {sec: 2}}
+  ]
+}"
