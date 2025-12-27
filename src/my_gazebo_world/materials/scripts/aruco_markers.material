@@ -1,0 +1,44 @@
+material ArucoMarkerRed
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_red_table.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+material ArucoMarkerBlue
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_blue_table.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+material ArucoMarkerYellow
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_yellow_table.png
+        filtering trilinear
+      }
+    }
+  }
+}
