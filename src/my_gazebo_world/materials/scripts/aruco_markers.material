@@ -42,3 +42,109 @@ material ArucoMarkerYellow
     }
   }
 }
+material ArucoMarkerStartStop
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_start_stop.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+material ArucoMarkerCharging
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_charging.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+material ArucoMarkerBigTable
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_big_table.png
+        filtering trilinear
+      }
+    }
+  }
+}
+material ArucoMarkerYellowLeftTop
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_yellow_left_top.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+material ArucoMarkerYellowLeftMiddle
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_yellow_left_middle.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+material ArucoMarkerYellowRightTop
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_yellow_right_top.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+material ArucoMarkerYellowRightMiddle
+{
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture marker_yellow_right_middle.png
+        filtering trilinear
+      }
+    }
+  }
+}
+
+
+

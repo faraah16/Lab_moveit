@@ -2984,7 +2984,7 @@
         <visual name='visual'>
           <geometry>
             <box>
-              <size>0.20 0.20 0.001</size>
+              <size>0.30 0.30 0.001</size>
             </box>
           </geometry>
           <material>
@@ -3009,7 +3009,7 @@
         <visual name='visual'>
           <geometry>
             <box>
-              <size>0.20 0.20 0.001</size>
+              <size>0.30 0.30 0.001</size>
             </box>
           </geometry>
           <material>
@@ -3034,7 +3034,7 @@
         <visual name='visual'>
           <geometry>
             <box>
-              <size>0.20 0.20 0.001</size>
+              <size>0.30 0.30 0.001</size>
             </box>
           </geometry>
           <material>
@@ -3050,7 +3050,179 @@
         <kinematic>0</kinematic>
       </link>
     </model>
+    <!-- MARKER ID 3 - START/STOP ZONE -->
+    <model name='aruco_marker_start_stop'>
+      <pose>-5.0 2.2 0.025 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/scripts/aruco_markers.material</uri>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/textures</uri>
+              <name>ArucoMarkerStartStop</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
 
+    <!-- MARKER ID 4 - CHARGING ZONE -->
+    <model name='aruco_marker_charging'>
+      <pose>5.0 2.2 0.025 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/scripts/aruco_markers.material</uri>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/textures</uri>
+              <name>ArucoMarkerCharging</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <!-- MARKER ID 5 - GRANDE TABLE NOIRE -->
+    <model name='aruco_marker_big_table'>
+      <pose>3.5 -1.3 0.025 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/scripts/aruco_markers.material</uri>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/textures</uri>
+              <name>ArucoMarkerBigTable</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+    <!-- MARKER ID 6 - YELLOW CRATE LEFT TOP -->
+    <model name='aruco_marker_yellow_left_top'>
+      <pose>-2.8 1.8 0.025 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/scripts/aruco_markers.material</uri>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/textures</uri>
+              <name>ArucoMarkerYellowLeftTop</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <!-- MARKER ID 7 - YELLOW CRATE LEFT MIDDLE -->
+    <model name='aruco_marker_yellow_left_middle'>
+      <pose>-2.8 0.5 0.025 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/scripts/aruco_markers.material</uri>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/textures</uri>
+              <name>ArucoMarkerYellowLeftMiddle</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <!-- MARKER ID 8 - YELLOW CRATE RIGHT TOP -->
+    <model name='aruco_marker_yellow_right_top'>
+      <pose>2.8 1.8 0.025 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/scripts/aruco_markers.material</uri>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/textures</uri>
+              <name>ArucoMarkerYellowRightTop</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
+
+    <!-- MARKER ID 9 - YELLOW CRATE RIGHT MIDDLE -->
+    <model name='aruco_marker_yellow_right_middle'>
+      <pose>2.8 0.5 0.025 0 0 0</pose>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.30 0.30 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/scripts/aruco_markers.material</uri>
+              <uri>file:///home/douaa/Lab_moveit/src/my_gazebo_world/materials/textures</uri>
+              <name>ArucoMarkerYellowRightMiddle</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+    </model>
 
   </world>
 
