@@ -1748,7 +1748,7 @@
     </model>
     <model name='start_stop_zone'>
       <static>0</static>
-      <pose>-3.5 -2.2 0.005 0 -0 0</pose>
+      <pose>-5.0 3.0 0.005 0 -0 0</pose>
       <link name='link'>
         <collision name='collision'>
           <geometry>
@@ -1804,7 +1804,7 @@
     </model>
     <model name='charging_zone'>
       <static>0</static>
-      <pose>3.5 -2.2 0.005 0 -0 0</pose>
+      <pose>5.0 3.0 0.005 0 -0 0</pose>
       <link name='link'>
         <collision name='collision'>
           <geometry>
@@ -1859,7 +1859,7 @@
       </link>
     </model>
     <model name='safety_zone_right'>
-      <pose>3.5 -2.2 0.004 0 -0 0</pose>
+      <pose>5.0 3.0 0.004 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='black_stripe_1'>
@@ -1928,33 +1928,20 @@
       </link>
     </model>
     <model name='black_table_right'>
-      <pose>3.5 -2.2 0.3 0 -0 1.5708</pose>
+      <pose>3.5 -2.0 0.34 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
           <geometry>
             <box>
-              <size>0.75 0.65 0.6</size>
+              <size>3.5 1.2 0.68</size>  <!-- ICI -->
             </box>
           </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
         </collision>
         <visual name='visual'>
           <geometry>
             <box>
-              <size>0.75 0.65 0.6</size>
+              <size>3.5 1.2 0.68</size>  <!-- ET ICI -->
             </box>
           </geometry>
           <material>
@@ -1962,9 +1949,6 @@
             <diffuse>0.15 0.15 0.15 1</diffuse>
           </material>
         </visual>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
       </link>
     </model>
     <model name='cardboard_package_right'>
@@ -2289,7 +2273,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg1'>
-        <pose>0.45 0.3 0.2 0 -0 0</pose>
+        <pose>1.7 0.55 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2326,7 +2310,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg2'>
-        <pose>0.45 -0.3 0.2 0 -0 0</pose>
+        <pose>1.7 -0.55 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2363,7 +2347,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg3'>
-        <pose>-0.45 0.3 0.2 0 -0 0</pose>
+        <pose>-1.7 0.55 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2400,7 +2384,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg4'>
-        <pose>-0.45 -0.3 0.2 0 -0 0</pose>
+        <pose>-1.7 -0.55 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2441,7 +2425,7 @@
         <collision name='collision'>
           <geometry>
             <box>
-              <size>0.9 0.6 0.03</size>
+              <size>3.4 1.1 0.03</size>
             </box>
           </geometry>
           <surface>
@@ -2461,7 +2445,7 @@
         <visual name='visual'>
           <geometry>
             <box>
-              <size>0.9 0.6 0.03</size>
+              <size>3.4 1.1 0.03</size>
             </box>
           </geometry>
           <material>
