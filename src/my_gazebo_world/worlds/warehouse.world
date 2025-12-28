@@ -2273,7 +2273,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg1'>
-        <pose>1.7 0.55 0.2 0 -0 0</pose>
+        <pose>0.45 0.3 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2310,7 +2310,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg2'>
-        <pose>1.7 -0.55 0.2 0 -0 0</pose>
+        <pose>0.45 -0.3 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2347,7 +2347,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg3'>
-        <pose>-1.7 0.55 0.2 0 -0 0</pose>
+        <pose>-0.45 0.3 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2384,7 +2384,7 @@
         <kinematic>0</kinematic>
       </link>
       <link name='leg4'>
-        <pose>-1.7 -0.55 0.2 0 -0 0</pose>
+        <pose>-0.45 -0.3 0.2 0 -0 0</pose>
         <collision name='collision'>
           <geometry>
             <box>
@@ -2425,7 +2425,7 @@
         <collision name='collision'>
           <geometry>
             <box>
-              <size>3.4 1.1 0.03</size>
+              <size>0.9 0.6 0.03</size>
             </box>
           </geometry>
           <surface>
@@ -2445,7 +2445,7 @@
         <visual name='visual'>
           <geometry>
             <box>
-              <size>3.4 1.1 0.03</size>
+              <size>0.9 0.6 0.03</size>
             </box>
           </geometry>
           <material>
