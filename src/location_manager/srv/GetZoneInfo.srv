@@ -1,0 +1,12 @@
+string zone_name    # Nom de la zone demandée
+---
+bool success        # Succès de la requête
+string message      # Message d'erreur si échec
+
+# Informations de la zone
+string name
+geometry_msgs/Pose pose
+int32 marker_id
+string function
+string description
+string color

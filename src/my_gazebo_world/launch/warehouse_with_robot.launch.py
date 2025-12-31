@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
@@ -9,7 +8,6 @@ from ament_index_python.packages import get_package_share_directory
 import xacro
 from launch.actions import ExecuteProcess
 import sys
-    
 
 def generate_launch_description():
     # Packages
@@ -24,9 +22,12 @@ def generate_launch_description():
     # Robot description
     with open(xacro_file, 'r') as f:
         robot_description_config_text = f.read()
+    
     robot_description = {'robot_description': robot_description_config_text}
+    
     # Charger les paramètres ros2_control
     controller_config = os.path.join(mobile_manipulator_sim_dir, 'config', 'simple_arm_controllers.yaml')
+    
     # LANCER GAZEBO
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -40,18 +41,18 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[robot_description, controller_config]  # <-- Ajoutez controller_config
+        parameters=[robot_description, controller_config]
     )
-        
-    # Spawn robot - POSITION STABLE
+    
+    # Spawn robot - START_STOP_ZONE (-5.0, 2.2)
     spawn_entity = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
         arguments=['-entity', 'mobile_simple_arm', 
                    '-topic', 'robot_description',
-                   '-x', '-3.5', 
-                   '-y', '-2.2', 
-                   '-z', '0.2'],  # Sur le sol
+                   '-x', '-5.0',   # ← CHANGÉ: start_stop_zone
+                   '-y', '3.1',    # ← CHANGÉ: start_stop_zone
+                   '-z', '0.5'],   # ← CHANGÉ: 0.5 pour stabilité
         output='screen'
     )
     
@@ -76,12 +77,10 @@ def generate_launch_description():
         arguments=['gripper_controller'],
         output='screen'
     )
+    
     # ========================================
     # NŒUD DE DÉTECTION ARUCO PERSONNALISÉ
     # ========================================
-    
- 
-    
     aruco_detector = ExecuteProcess(
         cmd=[
             'python3',
@@ -90,6 +89,7 @@ def generate_launch_description():
         output='screen',
         emulate_tty=True,
     )
+    
     return LaunchDescription([
         gazebo,
         robot_state_publisher,

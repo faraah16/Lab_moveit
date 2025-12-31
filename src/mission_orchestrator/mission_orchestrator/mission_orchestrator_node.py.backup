@@ -1,0 +1,250 @@
+#!/usr/bin/env python3
+
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Pose
+import yaml
+import os
+from ament_index_python.packages import get_package_share_directory
+
+# Importer le Navigation Client
+from mission_orchestrator.navigation_client import NavigationClient
+
+
+class MissionOrchestrator(Node):
+    def __init__(self):
+        super().__init__('mission_orchestrator')
+        
+        self.get_logger().info('🤖 Mission Orchestrator démarré')
+        
+        # Charger les zones depuis le fichier YAML
+        self.zones = {}
+        self.load_zones()
+        
+        # Initialiser le Navigation Client
+        self.get_logger().info('🧭 Initialisation du Navigation Client...')
+        self.nav_client = NavigationClient()
+        
+        self.get_logger().info('✅ Mission Orchestrator prêt !')
+    
+    def load_zones(self):
+        """Charge le fichier YAML des zones"""
+        try:
+            # Chemin vers le fichier de config
+            config_path = os.path.join(
+                get_package_share_directory('location_manager'),
+                'config',
+                'warehouse_zones.yaml'
+            )
+            
+            # Lire le fichier YAML
+            with open(config_path, 'r') as file:
+                config = yaml.safe_load(file)
+            
+            # Charger les zones
+            if 'zones' in config:
+                self.zones = config['zones']
+                self.get_logger().info(f'📍 {len(self.zones)} zones chargées')
+            else:
+                self.get_logger().error('❌ Aucune zone trouvée dans le fichier YAML')
+                
+        except FileNotFoundError:
+            self.get_logger().error(f'❌ Fichier de configuration non trouvé : {config_path}')
+        except Exception as e:
+            self.get_logger().error(f'❌ Erreur lors du chargement : {str(e)}')
+    
+    def get_zone_info(self, zone_name):
+        """Récupère les informations d'une zone"""
+        if zone_name not in self.zones:
+            self.get_logger().warn(f'⚠️  Zone inconnue : {zone_name}')
+            return None
+        
+        zone_data = self.zones[zone_name]
+        
+        # Créer un dictionnaire avec les infos
+        zone_info = {
+            'name': zone_data.get('name', zone_name),
+            'position': zone_data['position'],
+            'orientation': zone_data['orientation'],
+            'marker_id': zone_data.get('marker_id', -1),
+            'function': zone_data.get('function', 'unknown'),
+            'description': zone_data.get('description', ''),
+            'color': zone_data.get('color', 'none')
+        }
+        
+        return zone_info
+    
+
+
+    def go_to_zone(self, zone_name):
+        """
+        Navigue vers une zone nommée
+        
+        Args:
+            zone_name: Nom de la zone (ex: 'blue_table', 'charging_zone')
+            
+        Returns:
+            bool: True si succès, False sinon
+        """
+        self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        self.get_logger().info(f'🎯 MISSION: Aller à {zone_name}')
+        self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        
+        # 1. Récupérer les infos de la zone
+        self.get_logger().info(f'📍 Récupération des infos de la zone...')
+        zone_info = self.get_zone_info(zone_name)
+        
+        if zone_info is None:
+            self.get_logger().error(f'❌ Zone "{zone_name}" inconnue !')
+            return False
+        
+        # NOUVEAU : Appliquer un offset pour les tables
+        x = zone_info["position"]["x"]
+        y = zone_info["position"]["y"]
+        
+        # Pour les tables, reculer de 80cm (0.8m) sur l'axe Y
+        if zone_info["function"] == "pick_colored_box":
+            # Tables de tri (red, blue, yellow) - reculer vers le nord (+Y)
+            y += 1.0
+            self.get_logger().info(f'   🔧 Offset appliqué: table de tri (+0.8m sur Y)')
+        elif zone_info["function"] == "place_boxes":
+            # Table de dépôt - reculer vers le nord (+Y)
+            y += 1.0
+            self.get_logger().info(f'   🔧 Offset appliqué: table de dépôt (+0.8m sur Y)')
+        
+        self.get_logger().info(f'   ✅ Zone trouvée: {zone_info["name"]}')
+        self.get_logger().info(f'   📍 Position marqueur: ({zone_info["position"]["x"]:.2f}, {zone_info["position"]["y"]:.2f})')
+        self.get_logger().info(f'   📍 Position navigation: ({x:.2f}, {y:.2f})')
+        self.get_logger().info(f'   🎯 Marker ID: {zone_info["marker_id"]}')
+        self.get_logger().info(f'   ⚙️  Fonction: {zone_info["function"]}')
+        
+        # 2. Naviguer vers la zone (avec offset)
+        self.get_logger().info(f'🚀 Début de la navigation...')
+        success = self.nav_client.navigate_to_pose(
+            x=x,
+            y=y,
+            z=zone_info["position"]["z"],
+            orientation_w=zone_info["orientation"]["w"]
+        )
+        
+        if success:
+            self.get_logger().info(f'✅ Arrivé à {zone_name} !')
+            self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            return True
+        else:
+            self.get_logger().error(f'❌ Échec de la navigation vers {zone_name}')
+            self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            return False
+        
+    def pick_and_place_mission(self, pick_zone, place_zone):
+        """
+        Mission complète: Pick d'une zone et Place dans une autre
+        
+        Args:
+            pick_zone: Zone où picker (ex: 'blue_table')
+            place_zone: Zone où placer (ex: 'depot_table')
+            
+        Returns:
+            bool: True si succès, False sinon
+        """
+        self.get_logger().info(f'')
+        self.get_logger().info(f'╔═══════════════════════════════════════════════════╗')
+        self.get_logger().info(f'║     MISSION PICK & PLACE                          ║')
+        self.get_logger().info(f'║  Pick from: {pick_zone:20s}               ║')
+        self.get_logger().info(f'║  Place to:  {place_zone:20s}               ║')
+        self.get_logger().info(f'╚═══════════════════════════════════════════════════╝')
+        self.get_logger().info(f'')
+        
+        # ÉTAPE 1: Aller à la zone de pick
+        self.get_logger().info(f'📦 ÉTAPE 1/5: Navigation vers zone de pick')
+        if not self.go_to_zone(pick_zone):
+            self.get_logger().error(f'❌ MISSION ÉCHOUÉE: Navigation vers {pick_zone} impossible')
+            return False
+        
+        # ÉTAPE 2: Alignement avec ArUco (à implémenter plus tard)
+        self.get_logger().info(f'🎯 ÉTAPE 2/5: Alignement précis avec ArUco')
+        self.get_logger().info(f'   ⚠️  Non implémenté - Skip pour l\'instant')
+        # TODO: align_with_marker(zone_info["marker_id"])
+        
+        # ÉTAPE 3: Pick avec MoveIt (à implémenter plus tard)
+        self.get_logger().info(f'🦾 ÉTAPE 3/5: Pick de l\'objet')
+        self.get_logger().info(f'   ⚠️  Non implémenté - Simulation du pick (2s)')
+        import time
+        time.sleep(2)
+        self.get_logger().info(f'   ✅ Objet "attrapé" (simulé)')
+        
+        # ÉTAPE 4: Aller à la zone de place
+        self.get_logger().info(f'🚚 ÉTAPE 4/5: Navigation vers zone de dépôt')
+        if not self.go_to_zone(place_zone):
+            self.get_logger().error(f'❌ MISSION ÉCHOUÉE: Navigation vers {place_zone} impossible')
+            return False
+        
+        # ÉTAPE 5: Place avec MoveIt (à implémenter plus tard)
+        self.get_logger().info(f'🦾 ÉTAPE 5/5: Place de l\'objet')
+        self.get_logger().info(f'   ⚠️  Non implémenté - Simulation du place (2s)')
+        time.sleep(2)
+        self.get_logger().info(f'   ✅ Objet "déposé" (simulé)')
+        
+        # SUCCESS !
+        self.get_logger().info(f'')
+        self.get_logger().info(f'╔═══════════════════════════════════════════════════╗')
+        self.get_logger().info(f'║          ✅ MISSION RÉUSSIE ! 🎉                  ║')
+        self.get_logger().info(f'╚═══════════════════════════════════════════════════╝')
+        self.get_logger().info(f'')
+        
+        return True
+    
+    def patrol_mission(self, zone_list):
+        """
+        Mission de patrouille: visite une liste de zones
+        
+        Args:
+            zone_list: Liste de noms de zones
+            
+        Returns:
+            bool: True si succès, False sinon
+        """
+        self.get_logger().info(f'')
+        self.get_logger().info(f'╔═══════════════════════════════════════════════════╗')
+        self.get_logger().info(f'║     MISSION PATROUILLE                            ║')
+        self.get_logger().info(f'║  Zones: {len(zone_list)} points                          ║')
+        self.get_logger().info(f'╚═══════════════════════════════════════════════════╝')
+        self.get_logger().info(f'')
+        
+        for i, zone_name in enumerate(zone_list):
+            self.get_logger().info(f'🚶 Point {i+1}/{len(zone_list)}: {zone_name}')
+            
+            if not self.go_to_zone(zone_name):
+                self.get_logger().error(f'❌ PATROUILLE ÉCHOUÉE au point {i+1}')
+                return False
+            
+            # Pause de 3 secondes à chaque point
+            self.get_logger().info(f'⏸️  Pause 3 secondes...')
+            import time
+            time.sleep(3)
+        
+        self.get_logger().info(f'')
+        self.get_logger().info(f'╔═══════════════════════════════════════════════════╗')
+        self.get_logger().info(f'║     ✅ PATROUILLE TERMINÉE ! 🎉                   ║')
+        self.get_logger().info(f'╚═══════════════════════════════════════════════════╝')
+        self.get_logger().info(f'')
+        
+        return True
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    orchestrator = MissionOrchestrator()
+    
+    try:
+        # Garder le node actif
+        rclpy.spin(orchestrator)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        orchestrator.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()

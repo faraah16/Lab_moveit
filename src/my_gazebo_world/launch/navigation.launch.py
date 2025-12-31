@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, ExecuteProcess, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    
     # Chemins
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     mobile_sim_dir = get_package_share_directory('mobile_manipulator_sim')
@@ -34,31 +32,102 @@ def generate_launch_description():
         default_value='true',
         description='Automatically startup the nav2 stack')
     
-    declare_params_file_cmd = DeclareLaunchArgument(
-        'params_file',
-        default_value=nav2_params_file,
-        description='Full path to the ROS2 parameters file')
+    # Map Server (EXPLICITE)
+    map_server_node = Node(
+        package='nav2_map_server',
+        executable='map_server',
+        name='map_server',
+        output='screen',
+        parameters=[{
+            'use_sim_time': True,
+            'yaml_filename': map_file
+        }]
+    )
     
-    declare_map_yaml_cmd = DeclareLaunchArgument(
-        'map',
-        default_value=map_file,
-        description='Full path to map yaml file')
+    # Lifecycle Manager pour map_server
+    lifecycle_manager_map = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_map',
+        output='screen',
+        parameters=[{
+            'use_sim_time': True,
+            'autostart': True,
+            'node_names': ['map_server']
+        }]
+    )
     
-    # Nav2 Bringup
+    # AMCL pour localisation
+    amcl_node = Node(
+        package='nav2_amcl',
+        executable='amcl',
+        name='amcl',
+        output='screen',
+        parameters=[nav2_params_file, {'use_sim_time': True}]
+    )
+    
+    # Lifecycle Manager pour AMCL
+    lifecycle_manager_amcl = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_localization',
+        output='screen',
+        parameters=[{
+            'use_sim_time': True,
+            'autostart': True,
+            'node_names': ['amcl']
+        }]
+    )
+    
+    # Nav2 Bringup (controller, planner, bt_navigator, behaviors)
     nav2_bringup = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([nav2_bringup_dir, '/launch/bringup_launch.py']),
+        PythonLaunchDescriptionSource([nav2_bringup_dir, '/launch/navigation_launch.py']),
         launch_arguments={
-            'map': map_file,
-            'use_sim_time': use_sim_time,
+            'use_sim_time': 'true',
             'params_file': nav2_params_file,
-            'autostart': autostart
+            'autostart': 'true'
         }.items()
+    )
+    
+    # Initialisation automatique AMCL après 8 secondes
+    amcl_initial_pose = ExecuteProcess(
+        cmd=[
+            'ros2', 'topic', 'pub', '--once',
+            '/initialpose',
+            'geometry_msgs/PoseWithCovarianceStamped',
+            '{header: {frame_id: "map"}, '
+            'pose: {pose: {position: {x: -5.0, y: 3.1, z: 0.0}, '
+            'orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}}, '
+            'covariance: [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, '
+            '0.0, 0.25, 0.0, 0.0, 0.0, 0.0, '
+            '0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '
+            '0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '
+            '0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '
+            '0.0, 0.0, 0.0, 0.0, 0.0, 0.068]}}'
+        ],
+        output='screen'
+    )
+    
+    delayed_amcl_init = TimerAction(
+        period=8.0,
+        actions=[amcl_initial_pose]
     )
     
     return LaunchDescription([
         declare_use_sim_time_cmd,
         declare_autostart_cmd,
-        declare_params_file_cmd,
-        declare_map_yaml_cmd,
+        
+        # 1. Lancer map_server en PREMIER
+        map_server_node,
+        lifecycle_manager_map,
+        
+        # 2. Lancer AMCL
+        amcl_node,
+        lifecycle_manager_amcl,
+        
+        # 3. Lancer Nav2
         nav2_bringup,
+        
+        # 4. Initialiser AMCL
+        delayed_amcl_init,
     ])

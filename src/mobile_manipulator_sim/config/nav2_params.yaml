@@ -112,11 +112,11 @@ bt_navigator_navigate_to_pose_rclcpp_node:
 controller_server:
   ros__parameters:
     use_sim_time: True
-    controller_frequency: 20.0
+    controller_frequency: 30.0
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.5
     min_theta_velocity_threshold: 0.001
-    failure_tolerance: 0.3
+    failure_tolerance: 0.5
     progress_checker_plugin: "progress_checker"
     goal_checker_plugins: ["general_goal_checker"] # "precise_goal_checker"
     controller_plugins: ["FollowPath"]
@@ -124,8 +124,8 @@ controller_server:
     # Progress checker parameters
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      required_movement_radius: 0.2
+      movement_time_allowance: 30.0
     # Goal checker parameters
     #precise_goal_checker:
     #  plugin: "nav2_controller::SimpleGoalChecker"
@@ -135,49 +135,47 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.8
+      yaw_goal_tolerance: 3.14
     # DWB parameters
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.26
+      max_vel_x: 0.6          # ← AUGMENTE (pour avancer plus)
       max_vel_y: 0.0
-      max_vel_theta: 1.0
+      max_vel_theta: 1.0       # ← RÉDUIT ENCORE (rotation trop rapide)
       min_speed_xy: 0.0
-      max_speed_xy: 0.26
+      max_speed_xy: 0.6       # ← AUGMENTE
       min_speed_theta: 0.0
-      # Add high threshold velocity for turtlebot 3 issue.
-      # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
-      acc_lim_x: 2.5
+      acc_lim_x: 4.0
       acc_lim_y: 0.0
-      acc_lim_theta: 3.2
-      decel_lim_x: -2.5
+      acc_lim_theta: 3.0       # ← RÉDUIT (était 3.2)
+      decel_lim_x: -4.0
       decel_lim_y: 0.0
-      decel_lim_theta: -3.2
-      vx_samples: 20
+      decel_lim_theta: -3.0    # ← RÉDUIT
+      vx_samples: 10
       vy_samples: 5
-      vtheta_samples: 20
-      sim_time: 1.7
+      vtheta_samples: 10
+      sim_time: 0.7
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
-      xy_goal_tolerance: 0.25
-      trans_stopped_velocity: 0.25
+      xy_goal_tolerance: 0.6
+      trans_stopped_velocity: 0.1
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
+      BaseObstacle.scale: 0.01    # ← AUGMENTE (évite mieux les obstacles)
+      PathAlign.scale: 25.0
       PathAlign.forward_point_distance: 0.1
-      GoalAlign.scale: 24.0
+      GoalAlign.scale: 10.0       # ← RÉDUIT (moins strict sur orientation)
       GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 32.0
-      GoalDist.scale: 24.0
-      RotateToGoal.scale: 32.0
-      RotateToGoal.slowing_factor: 5.0
+      PathDist.scale: 35.0        # ← AUGMENTE (suit mieux le chemin)
+      GoalDist.scale: 15.0
+      RotateToGoal.scale: 10.0    # ← RÉDUIT (moins de rotation sur place)
+      RotateToGoal.slowing_factor: 3.0
       RotateToGoal.lookahead_time: -1.0
 
 local_costmap:
@@ -192,7 +190,7 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.22
+      robot_radius: 0.35
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
@@ -231,7 +229,7 @@ global_costmap:
       global_frame: map
       robot_base_frame: base_link
       use_sim_time: True
-      robot_radius: 0.22
+      robot_radius: 0.35
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -275,14 +273,14 @@ map_saver:
 
 planner_server:
   ros__parameters:
-    expected_planner_frequency: 20.0
+    expected_planner_frequency: 5.0
     use_sim_time: True
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
       tolerance: 0.5
-      use_astar: false
-      allow_unknown: true
+      use_astar: true
+      allow_unknown: false
 
 smoother_server:
   ros__parameters:
@@ -340,10 +338,10 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [0.26, 0.0, 1.0]
-    min_velocity: [-0.26, 0.0, -1.0]
-    max_accel: [2.5, 0.0, 3.2]
-    max_decel: [-2.5, 0.0, -3.2]
+    max_velocity: [0.6, 0.0, 2.5]
+    min_velocity: [-0.6, 0.0, -2.5]
+    max_accel: [5.0, 0.0, 6.0] 
+    max_decel: [-5.0, 0.0, -6.0]
     odom_topic: "odom"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]

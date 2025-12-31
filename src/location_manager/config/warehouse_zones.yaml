@@ -1,0 +1,195 @@
+# Warehouse Zones Configuration
+# Position format: {x, y, z} in meters (map frame)
+# Orientation format: {x, y, z, w} quaternion
+
+zones:
+  # Zone de repos / démarrage
+  start_stop_zone:
+    name: "Start/Stop Zone"
+    position:
+      x: -5.0
+      y: 2.2
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+    marker_id: 3
+    function: "rest_position"
+    description: "Zone de démarrage et d'arrêt du robot"
+
+  # Zone de chargement
+  charging_zone:
+    name: "Charging Station"
+    position:
+      x: 5.0
+      y: 2.2
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+    marker_id: 4
+    function: "battery_charging"
+    description: "Station de recharge de la batterie"
+
+  # Tables de tri par couleur - POSITIONS CORRIGÉES
+  red_table:
+    name: "Red Table"
+    position:
+      x: -6.0
+      y: -3.83  # ← CHANGÉ: -3.51 → -4.18 (position du marqueur)
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.707
+      w: 0.707
+    marker_id: 0
+    color: "red"
+    function: "pick_colored_box"
+    description: "Table pour boîtes rouges"
+
+  blue_table:
+    name: "Blue Table"
+    position:
+      x: -4.0
+      y: -3.83  # ← CHANGÉ: -3.51 → -4.18 (position du marqueur)
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.707
+      w: 0.707
+    marker_id: 1
+    color: "blue"
+    function: "pick_colored_box"
+    description: "Table pour boîtes bleues"
+
+  yellow_table:
+    name: "Yellow Table"
+    position:
+      x: -2.0
+      y: -3.83  # ← CHANGÉ: -3.51 → -4.18 (position du marqueur)
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.707
+      w: 0.707
+    marker_id: 2
+    color: "yellow"
+    function: "pick_colored_box"
+    description: "Table pour boîtes jaunes"
+
+  # Table de dépôt - POSITION CORRIGÉE
+  depot_table:
+    name: "Depot Table"
+    position:
+      x: 3.5
+      y: -3.83  # ← CHANGÉ: -3.51 → -4.18 (position du marqueur)
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: -0.707
+      w: 0.707
+    marker_id: 5
+    function: "place_boxes"
+    description: "Table de dépôt pour stockage des colis"
+
+  # Caisses jaunes (stockage) - PAS DE CHANGEMENT
+  yellow_crate_left_top:
+    name: "Yellow Crate Left Top"
+    position:
+      x: -2.8
+      y: 1.8
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+    marker_id: 6
+    function: "storage"
+    description: "Caisse de stockage gauche haute"
+
+  yellow_crate_left_middle:
+    name: "Yellow Crate Left Middle"
+    position:
+      x: -2.8
+      y: -0.7
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+    marker_id: 7
+    function: "storage"
+    description: "Caisse de stockage gauche milieu"
+
+  yellow_crate_right_top:
+    name: "Yellow Crate Right Top"
+    position:
+      x: 2.8
+      y: 1.8
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+    marker_id: 8
+    function: "storage"
+    description: "Caisse de stockage droite haute"
+
+  yellow_crate_right_middle:
+    name: "Yellow Crate Right Middle"
+    position:
+      x: 2.8
+      y: -0.7
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+    marker_id: 9
+    function: "storage"
+    description: "Caisse de stockage droite milieu"
+
+  # Zone de collection des commandes (centre)
+  collection_zone:
+    name: "Order Collection Zone"
+    position:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+    orientation:
+      x: 0.0
+      y: 0.0
+      z: 0.0
+      w: 1.0
+    marker_id: null
+    function: "order_delivery"
+    description: "Zone de livraison des commandes préparées"
+
+# Groupes de zones par fonction
+zone_groups:
+  colored_tables:
+    - red_table
+    - blue_table
+    - yellow_table
+  storage_crates:
+    - yellow_crate_left_top
+    - yellow_crate_left_middle
+    - yellow_crate_right_top
+    - yellow_crate_right_middle
+  operational_zones:
+    - start_stop_zone
+    - charging_zone
+    - collection_zone
+    - depot_table
