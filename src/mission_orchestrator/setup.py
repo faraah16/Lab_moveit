@@ -25,6 +25,7 @@ setup(
             'mission_orchestrator = mission_orchestrator.mission_orchestrator_node:main',
             'navigation_client = mission_orchestrator.navigation_client:main',
             'test_mission = mission_orchestrator.test_mission:main',
+            'test_all_zones = mission_orchestrator.test_all_zones:main',
         ],
     },
 )

@@ -10,7 +10,8 @@ import math
 from geometry_msgs.msg import Twist, PoseStamped
 from tf2_ros import Buffer, TransformListener
 import time
-
+import subprocess
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
 # Importer le Navigation Client
 from mission_orchestrator.navigation_client import NavigationClient
 
@@ -28,7 +29,18 @@ class MissionOrchestrator(Node):
         # Initialiser le Navigation Client
         self.get_logger().info('🧭 Initialisation du Navigation Client...')
         self.nav_client = NavigationClient()
+
+
+        # ═══════════════════════════════════════════════════════
+        # NOUVEAU : TF Buffer PERSISTANT
+        # ═══════════════════════════════════════════════════════
+        self.get_logger().info('🔧 Initialisation du TF Buffer...')
+        self.tf_buffer = Buffer()
+        self.tf_listener = TransformListener(self.tf_buffer, self)
+        self.get_logger().info('✅ TF Buffer initialisé')
         
+
+
         self.get_logger().info('✅ Mission Orchestrator prêt !')
     
     def load_zones(self):
@@ -77,27 +89,86 @@ class MissionOrchestrator(Node):
         }
         
         return zone_info
+    
     def rotate_towards_goal(self, goal_x, goal_y):
         """
-        Fait tourner le robot sur place pour s'orienter vers le goal
-        avant de commencer la navigation
+        Fait tourner le robot sur place TRÈS PRÉCISÉMENT pour s'orienter vers le goal
+        AMÉLIORATION: Rotation en boucle fermée avec feedback TF en temps réel
+        + Attente robuste de la disponibilité de TF
         
         Args:
             goal_x, goal_y: Coordonnées du goal
         """
         try:
-            # Créer TF buffer pour obtenir position actuelle
-            tf_buffer = Buffer()
-            tf_listener = TransformListener(tf_buffer, self)
+            # Créer TF buffer PERSISTENT pour feedback en temps réel
+            tf_buffer = self.tf_buffer
             
-            # Attendre que TF soit prêt
-            time.sleep(0.5)
+            # ═══════════════════════════════════════════════════════
+            # ATTENDRE QUE TF SOIT PRÊT (CRITIQUE!)
+            # ═══════════════════════════════════════════════════════
+            self.get_logger().info(f'   ⏳ Attente initialisation TF...')
+            time.sleep(2.0)  # Délai initial augmenté
             
-            # Obtenir position actuelle du robot
+            # Vérifier que la frame "map" existe avec plusieurs tentatives
+            max_attempts = 10
+            tf_ready = False
+            
+            for attempt in range(max_attempts):
+                try:
+                    # Test de disponibilité de la frame map -> base_link
+                    test_transform = tf_buffer.lookup_transform(
+                        'map', 
+                        'base_link', 
+                        rclpy.time.Time(seconds=0),
+                        timeout=rclpy.duration.Duration(seconds=1.0)
+                    )
+                    # Si on arrive ici, TF est OK
+                    self.get_logger().info(f'   ✅ TF prêt! (frame map→base_link disponible)')
+                    tf_ready = True
+                    break
+                    
+                except Exception as e:
+                    if attempt < max_attempts - 1:
+                        self.get_logger().info(
+                            f'   ⏳ TF pas encore prêt, attente... '
+                            f'({attempt+1}/{max_attempts}) - {str(e)[:50]}'
+                        )
+                        time.sleep(1.0)
+                    else:
+                        # Dernier essai échoué
+                        raise Exception(
+                            f"TF map→base_link non disponible après {max_attempts}s. "
+                            f"AMCL n'est probablement pas encore localisé."
+                        )
+            
+            if not tf_ready:
+                raise Exception("TF non disponible")
+            
+            # ═══════════════════════════════════════════════════════
+            # FONCTION HELPER: Obtenir l'angle actuel du robot
+            # ═══════════════════════════════════════════════════════
+            def get_current_yaw():
+                """Récupère l'orientation actuelle du robot"""
+                try:
+                    transform = tf_buffer.lookup_transform(
+                        'map', 
+                        'base_link', 
+                        rclpy.time.Time(seconds=0)
+                    )
+                    q = transform.transform.rotation
+                    siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+                    cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
+                    return math.atan2(siny_cosp, cosy_cosp)
+                except:
+                    return None
+            
+            # ═══════════════════════════════════════════════════════
+            # ÉTAPE 1: Calculer angle cible
+            # ═══════════════════════════════════════════════════════
             transform = tf_buffer.lookup_transform(
                 'map', 
                 'base_link', 
-                rclpy.time.Time()
+                rclpy.time.Time(seconds=0)
             )
             
             current_x = transform.transform.translation.x
@@ -108,15 +179,10 @@ class MissionOrchestrator(Node):
             dy = goal_y - current_y
             target_angle = math.atan2(dy, dx)
             
-            # Obtenir orientation actuelle du robot
-            q = transform.transform.rotation
+            # Orientation actuelle
+            current_yaw = get_current_yaw()
             
-            # Convertir quaternion en angle (yaw)
-            siny_cosp = 2 * (q.w * q.z + q.x * q.y)
-            cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
-            current_yaw = math.atan2(siny_cosp, cosy_cosp)
-            
-            # Calculer différence d'angle
+            # Différence d'angle
             angle_diff = target_angle - current_yaw
             
             # Normaliser entre -pi et pi
@@ -129,48 +195,161 @@ class MissionOrchestrator(Node):
             self.get_logger().info(f'🎯 Orientation cible: {math.degrees(target_angle):.1f}°')
             self.get_logger().info(f'🔄 Rotation nécessaire: {math.degrees(angle_diff):.1f}°')
             
-            # Si rotation > 20°, faire rotation sur place
-            if abs(angle_diff) > 0.35:  # ~20 degrés
-                self.get_logger().info(f'   ↻ ROTATION SUR PLACE en cours...')
+# ═══════════════════════════════════════════════════════
+# ÉTAPE 2: Rotation RIGIDE sur place (si > 10°)
+            # ═══════════════════════════════════════════════════════
+            if abs(angle_diff) > 0.175:  # ~10 degrés
+                self.get_logger().info(f'   ↻ ROTATION RIGIDE SUR PLACE...')
                 
-                # Créer publisher pour cmd_vel
-                cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', 10)
-                time.sleep(0.2)  # Laisser le publisher s'initialiser
+                # ═══════════════════════════════════════════════════════
+                # DÉSACTIVER LE CONTROLLER NAV2
+                # ═══════════════════════════════════════════════════════
+                self.get_logger().info(f'   ⏸️  Pause du controller Nav2...')
+                try:
+                    result = subprocess.run(
+                        ['ros2', 'lifecycle', 'set', '/controller_server', 'deactivate'],
+                        capture_output=True,
+                        timeout=5
+                    )
+                    if result.returncode == 0:
+                        self.get_logger().info(f'   ✅ Controller Nav2 désactivé')
+                except Exception as e:
+                    self.get_logger().warn(f'   ⚠️  Erreur désactivation: {e}')
                 
-                # Calculer vitesse de rotation (max 0.6 rad/s)
-                rotation_speed = 0.4 if angle_diff > 0 else -0.4
+                time.sleep(0.5)
                 
-                # Publier commandes de rotation
-                twist = Twist()
-                rate = self.create_rate(10)  # 10 Hz
+                # ═══════════════════════════════════════════════════════
+                # CRÉER PUBLISHER AVEC QoS EXACT
+                # ═══════════════════════════════════════════════════════
+                from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
                 
-                # Rotation progressive
-                total_rotated = 0.0
-                dt = 0.1  # 10 Hz
+                qos = QoSProfile(
+                    reliability=ReliabilityPolicy.RELIABLE,
+                    durability=DurabilityPolicy.VOLATILE,
+                    history=HistoryPolicy.KEEP_LAST,
+                    depth=1
+                )
                 
-                while abs(total_rotated) < abs(angle_diff) - 0.1:  # Marge de 0.1 rad
+                cmd_vel_pub = self.create_publisher(Twist, '/cmd_vel', qos)
+                self.get_logger().info(f'   📡 Publisher créé (RELIABLE/VOLATILE/depth=1)')
+                
+                time.sleep(1.5)
+                
+                subscriber_count = cmd_vel_pub.get_subscription_count()
+                self.get_logger().info(f'   📊 Subscribers: {subscriber_count}')
+                                
+                # PHASE 1: Rotation avec feedback
+                self.get_logger().info(f'   📍 Phase 1: Rotation avec feedback temps réel')
+
+                tolerance = 0.20
+                max_iterations = 800
+                iteration = 0
+
+                while iteration < max_iterations:
+                    # ⭐ CRITIQUE : Spinner pour recevoir messages TF
+                    rclpy.spin_once(self, timeout_sec=0.01)
+                    
+                    current_yaw = get_current_yaw()
+                    if current_yaw is None:
+                        break
+                    
+                    angle_error = target_angle - current_yaw
+                    while angle_error > math.pi:
+                        angle_error -= 2 * math.pi
+                    while angle_error < -math.pi:
+                        angle_error += 2 * math.pi
+                    
+                    if abs(angle_error) < tolerance:
+                        self.get_logger().info(f'   ✅ Cible atteinte! Erreur: {math.degrees(angle_error):.2f}°')
+                        break
+                                        
+                    speed_factor = max(0.4, min(1.0, abs(angle_error) / 0.5))
+                    rotation_speed = 1.2 * speed_factor  # 1.2 rad/s max (50% plus rapide!)
+                    
+                    if angle_error < 0:
+                        rotation_speed = -rotation_speed
+                    
+                    twist = Twist()
                     twist.linear.x = 0.0
                     twist.angular.z = rotation_speed
                     cmd_vel_pub.publish(twist)
+                    # Log détaillé
+                    if iteration % 20 == 0:
+                        self.get_logger().info(
+                            f'      Itération {iteration}: '
+                            f'Angle: {math.degrees(current_yaw):+.1f}° | '
+                            f'Erreur: {math.degrees(angle_error):+.1f}° | '
+                            f'Cmd: {rotation_speed:+.2f} rad/s')
                     
-                    total_rotated += abs(rotation_speed * dt)
-                    time.sleep(dt)
+                    iteration += 1
+                    time.sleep(0.04)  # Réduit à 40ms pour compenser le spin_once    
+                # PHASE 2: Arrêt
+                self.get_logger().info(f'   🛑 Arrêt')
+                twist = Twist()
+                for _ in range(10):
+                    cmd_vel_pub.publish(twist)
+                    time.sleep(0.05)
                 
-                # Arrêter la rotation
-                twist.angular.z = 0.0
-                cmd_vel_pub.publish(twist)
+                self.get_logger().info(f'   ✅ Rotation terminée!')
+
+                # ═══════════════════════════════════════════════════════
+                # VÉRIFICATION FINALE
+                # ═══════════════════════════════════════════════════════
+                time.sleep(0.5)
+                final_yaw = get_current_yaw()
+                if final_yaw is not None:
+                    final_error = target_angle - final_yaw
+                    while final_error > math.pi:
+                        final_error -= 2 * math.pi
+                    while final_error < -math.pi:
+                        final_error += 2 * math.pi
+                    
+                    self.get_logger().info(f'   📊 Vérification finale:')
+                    self.get_logger().info(f'      Orientation cible: {math.degrees(target_angle):.1f}°')
+                    self.get_logger().info(f'      Orientation finale: {math.degrees(final_yaw):.1f}°')
+                    self.get_logger().info(f'      Erreur: {math.degrees(final_error):.1f}°')
+                    
+                    if abs(final_error) > 0.26:  # 15°
+                        self.get_logger().warn(f'   ⚠️  ROTATION INCOMPLÈTE !')
+                        self.get_logger().warn(f'   ⚠️  Risque de collision pendant navigation')
+                    else:
+                        self.get_logger().info(f'   ✅ Orientation correcte !')
                 
-                self.get_logger().info(f'   ✅ Rotation terminée !')
-                time.sleep(0.5)  # Pause pour stabiliser
+                # ═══════════════════════════════════════════════════════
+                # RÉACTIVER NAV2
+                # ═══════════════════════════════════════════════════════
+                self.get_logger().info(f'   ▶️  Réactivation Nav2...')
+                try:
+                    subprocess.run(
+                        ['ros2', 'lifecycle', 'set', '/controller_server', 'activate'],
+                        capture_output=True,
+                        timeout=5
+                    )
+                    self.get_logger().info(f'   ✅ Nav2 réactivé')
+                except:
+                    pass
                 
+                time.sleep(2.0)
+                try:
+                    result = subprocess.run(
+                        ['ros2', 'lifecycle', 'get', '/controller_server'],
+                        capture_output=True,
+                        text=True,
+                        timeout=2
+                    )
+                    state = result.stdout.strip()
+                    self.get_logger().info(f'   📊 État controller_server: {state}')
+                except:
+                    pass
+
             else:
-                self.get_logger().info(f'   ℹ️  Rotation minime, pas de rotation sur place')
-            
+                self.get_logger().info(f'   ℹ️  Rotation < 10°, skip')
+                        
         except Exception as e:
             self.get_logger().warn(f'⚠️  Erreur lors de la rotation: {e}')
             self.get_logger().warn(f'   → Navigation directe sans rotation préalable')
-
-
+        
+        
     def go_to_zone(self, zone_name):
         """
         Navigue vers une zone nommée
@@ -227,6 +406,28 @@ class MissionOrchestrator(Node):
         # ═══════════════════════════════════════════════════════
         self.get_logger().info(f'')
         self.get_logger().info(f'🚀 PHASE 2: Navigation vers la position')
+
+        # NOUVEAU : Clear costmaps avant navigation
+        self.get_logger().info(f'   🧹 Nettoyage des costmaps...')
+        try:
+            subprocess.run(
+                ['ros2', 'service', 'call', '/local_costmap/clear_entirely_local_costmap', 
+                'nav2_msgs/srv/ClearEntireCostmap', '{}'],
+                capture_output=True,
+                timeout=2
+            )
+            subprocess.run(
+                ['ros2', 'service', 'call', '/global_costmap/clear_entirely_global_costmap',
+                'nav2_msgs/srv/ClearEntireCostmap', '{}'],
+                capture_output=True,
+                timeout=2
+            )
+            self.get_logger().info(f'   ✅ Costmaps nettoyées')
+        except:
+            pass
+
+        time.sleep(0.5)
+
         success = self.nav_client.navigate_to_pose(
             x=x,
             y=y,
@@ -278,7 +479,6 @@ class MissionOrchestrator(Node):
         # ÉTAPE 3: Pick avec MoveIt (à implémenter plus tard)
         self.get_logger().info(f'🦾 ÉTAPE 3/5: Pick de l\'objet')
         self.get_logger().info(f'   ⚠️  Non implémenté - Simulation du pick (2s)')
-        import time
         time.sleep(2)
         self.get_logger().info(f'   ✅ Objet "attrapé" (simulé)')
         
@@ -329,7 +529,6 @@ class MissionOrchestrator(Node):
             
             # Pause de 3 secondes à chaque point
             self.get_logger().info(f'⏸️  Pause 3 secondes...')
-            import time
             time.sleep(3)
         
         self.get_logger().info(f'')
