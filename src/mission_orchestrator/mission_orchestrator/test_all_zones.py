@@ -54,7 +54,6 @@ def main(args=None):
     # LISTE DES ZONES À TESTER
     # ═══════════════════════════════════════════════════════
     zones_to_test = [
-        'start_stop_zone',    # Zone de départ (proche)
         'green_table',        # Table verte
         'blue_table',         # Table bleue
         'red_table',          # Table rouge
@@ -72,22 +71,41 @@ def main(args=None):
     # TESTER CHAQUE ZONE
     # ═══════════════════════════════════════════════════════
     results = {}
-    
+
     for i, zone_name in enumerate(zones_to_test):
         print(f"\n{'─'*60}")
         print(f"🎯 TEST {i+1}/{len(zones_to_test)}: {zone_name}")
         print(f"{'─'*60}\n")
         
+        # ⭐ NOUVEAU : Afficher l'heure de début
+        import datetime
+        start_time = datetime.datetime.now()
+        print(f"⏰ Début: {start_time.strftime('%H:%M:%S')}")
+        
+        # ⭐ NOUVEAU : Info avant navigation
+        print(f"📍 Lancement de la navigation vers {zone_name}...")
+        print(f"   (Consultez les logs ci-dessous pour détails rotation/navigation)\n")
+        
+        # Navigation
         success = orchestrator.go_to_zone(zone_name)
+        
+        # ⭐ NOUVEAU : Afficher l'heure de fin
+        end_time = datetime.datetime.now()
+        duration = (end_time - start_time).total_seconds()
+        
         results[zone_name] = success
         
         if success:
             print(f"\n✅ {zone_name}: SUCCÈS")
+            print(f"   ⏱️  Temps écoulé: {duration:.1f}s")
+            print(f"   ⏰ Fin: {end_time.strftime('%H:%M:%S')}")
             # Pause 3 secondes à chaque point
             print("   ⏸️  Pause 3 secondes...")
             time.sleep(3)
         else:
             print(f"\n❌ {zone_name}: ÉCHEC")
+            print(f"   ⏱️  Temps écoulé: {duration:.1f}s")
+            print(f"   ⏰ Fin: {end_time.strftime('%H:%M:%S')}")
             
             # Demander si on continue
             print("\n⚠️  Voulez-vous continuer le test ?")

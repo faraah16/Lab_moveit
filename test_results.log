@@ -1,0 +1,72 @@
+[INFO] [1767347182.105782421] [mission_orchestrator]: 🤖 Mission Orchestrator démarré
+[INFO] [1767347182.157416887] [mission_orchestrator]: 📍 11 zones chargées
+[INFO] [1767347182.157812587] [mission_orchestrator]: 🧭 Initialisation du Navigation Client...
+[INFO] [1767347182.195242133] [navigation_client]: 🧭 Navigation Client initialisé
+[INFO] [1767347182.196637122] [mission_orchestrator]: 🔧 Initialisation du TF Buffer...
+[INFO] [1767347182.202816119] [mission_orchestrator]: ✅ TF Buffer initialisé
+[INFO] [1767347182.203371216] [mission_orchestrator]: ✅ Mission Orchestrator prêt !
+[INFO] [1767347195.738660757] [mission_orchestrator]: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[INFO] [1767347195.741276851] [mission_orchestrator]: 🎯 MISSION: Aller à green_table
+[INFO] [1767347195.741651865] [mission_orchestrator]: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[INFO] [1767347195.741976234] [mission_orchestrator]: 📍 Récupération des infos de la zone...
+[WARN] [1767347195.742455766] [mission_orchestrator]: ⚠️  Zone inconnue : green_table
+[ERROR] [1767347195.742802874] [mission_orchestrator]: ❌ Zone "green_table" inconnue !
+[INFO] [1767347200.748735364] [mission_orchestrator]: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[INFO] [1767347200.749261051] [mission_orchestrator]: 🎯 MISSION: Aller à blue_table
+[INFO] [1767347200.749622763] [mission_orchestrator]: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[INFO] [1767347200.750135515] [mission_orchestrator]: 📍 Récupération des infos de la zone...
+[INFO] [1767347200.750519383] [mission_orchestrator]:    🔧 Offset navigation: +0.2m sur Y
+[INFO] [1767347200.750837707] [mission_orchestrator]:    📏 Distance robot→table: ~0.23m
+[INFO] [1767347200.751188789] [mission_orchestrator]:    ✅ Zone trouvée: Blue Table
+[INFO] [1767347200.751493787] [mission_orchestrator]:    📍 Position marqueur: (-4.00, -3.43)
+[INFO] [1767347200.751780831] [mission_orchestrator]:    📍 Position navigation: (-4.00, -3.23)
+[INFO] [1767347200.752403291] [mission_orchestrator]:    🎯 Marker ID: 1
+[INFO] [1767347200.753078148] [mission_orchestrator]:    ⚙️  Fonction: pick_colored_box
+[INFO] [1767347200.753550623] [mission_orchestrator]: 
+[INFO] [1767347200.754094865] [mission_orchestrator]: 🔄 PHASE 1: Orientation vers le goal
+[INFO] [1767347200.754578383] [mission_orchestrator]:    ⏳ Attente initialisation TF...
+[INFO] [1767347202.756604288] [mission_orchestrator]:    ✅ TF prêt! (frame map→base_link disponible)
+[INFO] [1767347202.757314695] [mission_orchestrator]: 🧭 Orientation actuelle: 5.5°
+[INFO] [1767347202.758015491] [mission_orchestrator]: 🎯 Orientation cible: -81.3°
+[INFO] [1767347202.758369550] [mission_orchestrator]: 🔄 Rotation nécessaire: -86.8°
+[INFO] [1767347202.758674566] [mission_orchestrator]:    ↻ ROTATION RIGIDE SUR PLACE...
+[INFO] [1767347202.761228595] [mission_orchestrator]:    ⏸️  Pause du controller Nav2...
+[INFO] [1767347205.283851805] [mission_orchestrator]:    ✅ Controller Nav2 désactivé
+[INFO] [1767347205.786956382] [mission_orchestrator]:    📡 Publisher créé (RELIABLE/VOLATILE/depth=1)
+[INFO] [1767347207.288715574] [mission_orchestrator]:    📊 Subscribers: 1
+[INFO] [1767347207.289503698] [mission_orchestrator]:    📍 Phase 1: Rotation avec feedback temps réel
+[INFO] [1767347207.294445818] [mission_orchestrator]:       Itération 0: Angle: +5.5° | Erreur: -86.8° | Cmd: -1.20 rad/s
+[INFO] [1767347208.132755816] [mission_orchestrator]:       Itération 20: Angle: +6.7° | Erreur: -88.0° | Cmd: -1.20 rad/s
+[INFO] [1767347208.972184104] [mission_orchestrator]:       Itération 40: Angle: +7.0° | Erreur: -88.3° | Cmd: -1.20 rad/s
+[INFO] [1767347209.813489193] [mission_orchestrator]:       Itération 60: Angle: +7.2° | Erreur: -88.5° | Cmd: -1.20 rad/s
+[INFO] [1767347210.661772764] [mission_orchestrator]:       Itération 80: Angle: +7.1° | Erreur: -88.5° | Cmd: -1.20 rad/s
+[INFO] [1767347211.507543580] [mission_orchestrator]:       Itération 100: Angle: +5.8° | Erreur: -87.1° | Cmd: -1.20 rad/s
+[INFO] [1767347212.343211247] [mission_orchestrator]:       Itération 120: Angle: -1.1° | Erreur: -80.2° | Cmd: -1.20 rad/s
+[INFO] [1767347213.183404883] [mission_orchestrator]:       Itération 140: Angle: -8.0° | Erreur: -73.4° | Cmd: -1.20 rad/s
+[INFO] [1767347214.035343117] [mission_orchestrator]:       Itération 160: Angle: -14.1° | Erreur: -67.2° | Cmd: -1.20 rad/s
+[INFO] [1767347214.890426204] [mission_orchestrator]:       Itération 180: Angle: -21.3° | Erreur: -60.0° | Cmd: -1.20 rad/s
+[INFO] [1767347215.753298984] [mission_orchestrator]:       Itération 200: Angle: -27.7° | Erreur: -53.6° | Cmd: -1.20 rad/s
+[INFO] [1767347216.593556577] [mission_orchestrator]:       Itération 220: Angle: -35.7° | Erreur: -45.6° | Cmd: -1.20 rad/s
+[INFO] [1767347217.442390514] [mission_orchestrator]:       Itération 240: Angle: -41.5° | Erreur: -39.8° | Cmd: -1.20 rad/s
+[INFO] [1767347218.319754404] [mission_orchestrator]:       Itération 260: Angle: -48.4° | Erreur: -32.9° | Cmd: -1.20 rad/s
+[INFO] [1767347219.163182729] [mission_orchestrator]:       Itération 280: Angle: -55.1° | Erreur: -26.2° | Cmd: -1.10 rad/s
+[INFO] [1767347220.017666073] [mission_orchestrator]:       Itération 300: Angle: -61.8° | Erreur: -19.5° | Cmd: -0.82 rad/s
+[INFO] [1767347220.866434245] [mission_orchestrator]:       Itération 320: Angle: -65.8° | Erreur: -15.5° | Cmd: -0.65 rad/s
+[INFO] [1767347221.364116570] [mission_orchestrator]:    ✅ Cible atteinte! Erreur: -11.46°
+[INFO] [1767347221.364508632] [mission_orchestrator]:    🛑 Arrêt
+[INFO] [1767347221.874583609] [mission_orchestrator]:    ✅ Rotation terminée!
+[INFO] [1767347222.376073577] [mission_orchestrator]:    📊 Vérification finale:
+[INFO] [1767347222.376686135] [mission_orchestrator]:       Orientation cible: -81.3°
+[INFO] [1767347222.377191812] [mission_orchestrator]:       Orientation finale: -69.8°
+[INFO] [1767347222.378715732] [mission_orchestrator]:       Erreur: -11.5°
+[INFO] [1767347222.379401987] [mission_orchestrator]:    ✅ Orientation correcte !
+[INFO] [1767347222.379942281] [mission_orchestrator]:    ▶️  Réactivation Nav2...
+[INFO] [1767347223.905426124] [mission_orchestrator]:    ✅ Nav2 réactivé
+[INFO] [1767347227.387590871] [mission_orchestrator]:    📊 État controller_server: active [3]
+[INFO] [1767347227.388411552] [mission_orchestrator]: 
+[INFO] [1767347227.388756003] [mission_orchestrator]: 🚀 PHASE 2: Navigation vers la position
+[INFO] [1767347227.390389075] [mission_orchestrator]:    🧹 Nettoyage des costmaps...
+[INFO] [1767347229.580096187] [mission_orchestrator]:    ✅ Costmaps nettoyées
+[INFO] [1767347230.081360284] [navigation_client]: ⏳ Attente du serveur Nav2...
+[INFO] [1767347230.083339542] [navigation_client]: 🎯 Navigation vers (-4.00, -3.23)
+[INFO] [1767347230.087208799] [navigation_client]: ✅ Goal accepté, navigation en cours...

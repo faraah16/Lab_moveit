@@ -2420,7 +2420,7 @@
     
     <!-- MARKER ID 0 - ZONE ROUGE -->
     <model name='aruco_marker_red'>
-      <pose>-6.0 -3.83 0.025 0 0 0</pose>
+      <pose>-6.0 -3.43 0.025 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -2445,7 +2445,7 @@
 
     <!-- MARKER ID 1 - ZONE BLEUE -->
     <model name='aruco_marker_blue'>
-      <pose>-4.0 -3.83 0.025 0 0 0</pose>
+      <pose>-4.0 -3.43 0.025 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -2470,7 +2470,7 @@
 
     <!-- MARKER ID 2 - ZONE VERTE/JAUNE -->
     <model name='aruco_marker_yellow'>
-      <pose>-2.0 -3.83 0.025 0 0 0</pose>
+      <pose>-2.0 -3.43 0.025 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
@@ -2544,7 +2544,7 @@
 
     <!-- MARKER ID 5 - GRANDE TABLE NOIRE -->
     <model name='aruco_marker_big_table'>
-      <pose>3.5 -3.83 0.025 0 0 0</pose>
+      <pose>3.5 -3.1 0.025 0 0 0</pose>
       <static>1</static>
       <link name='link'>
         <visual name='visual'>
