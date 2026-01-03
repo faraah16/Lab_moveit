@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import rclpy
 from rclpy.node import Node
 from tf2_ros import Buffer, TransformListener
@@ -54,13 +53,12 @@ def main(args=None):
     # LISTE DES ZONES À TESTER
     # ═══════════════════════════════════════════════════════
     zones_to_test = [
-        'start_stop_zone',    # Zone de départ (proche)
-        'green_table',        # Table verte
+        'yellow_table',        # Table verte
         'blue_table',         # Table bleue
         'red_table',          # Table rouge
         'depot_table',        # Table de dépôt
         'charging_zone',      # Zone de recharge
-        'box_zone_1',         # Caisse 1
+        'yellow_crate_right_middle',         # Caisse 1
     ]
     
     print("\n" + "="*60)
@@ -78,15 +76,16 @@ def main(args=None):
         print(f"🎯 TEST {i+1}/{len(zones_to_test)}: {zone_name}")
         print(f"{'─'*60}\n")
         
-        success = orchestrator.go_to_zone(zone_name)
+        success = orchestrator.go_to_zone_with_waypoint(zone_name)
         results[zone_name] = success
         
         if success:
             print(f"\n✅ {zone_name}: SUCCÈS")
             # Pause 3 secondes à chaque point
-            print("   ⏸️  Pause 3 secondes...")
-            time.sleep(3)
+            print("   ⏸️  Pause 5 secondes...")
+            time.sleep(5)
         else:
+            
             print(f"\n❌ {zone_name}: ÉCHEC")
             
             # Demander si on continue
