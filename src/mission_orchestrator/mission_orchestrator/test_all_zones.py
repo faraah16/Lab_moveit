@@ -53,12 +53,10 @@ def main(args=None):
     # LISTE DES ZONES À TESTER
     # ═══════════════════════════════════════════════════════
     zones_to_test = [
-        'yellow_table',        # Table verte
         'blue_table',         # Table bleue
-        'red_table',          # Table rouge
         'depot_table',        # Table de dépôt
-        'charging_zone',      # Zone de recharge
         'yellow_crate_right_middle',         # Caisse 1
+        'charging_zone',      # Zone de recharge
     ]
     
     print("\n" + "="*60)

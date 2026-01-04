@@ -478,7 +478,6 @@
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
-    
     <!-- Les 4 roues - NOUVELLE CONFIGURATION -->
     <joint name="front_left_wheel_joint">
       <command_interface name="velocity"/>
@@ -503,6 +502,7 @@
       <state_interface name="position"/>
       <state_interface name="velocity"/>
     </joint>
+    
   </ros2_control>
 
   <!-- Plugin Gazebo ros2_control - IDENTIQUE -->
@@ -514,21 +514,6 @@
     </plugin>
   </gazebo>
 
-  <!-- ========================================= -->
-  <!-- PLUGIN SKID STEERING (4 ROUES TANK) -->
-  <!-- ========================================= -->
-  
-  <gazebo>
-    <plugin name="skid_steer_drive" filename="libgazebo_ros_planar_move.so">
-      <update_rate>50</update_rate>
-      <command_topic>cmd_vel</command_topic>
-      <odometry_topic>odom</odometry_topic>
-      <odometry_frame>odom</odometry_frame>
-      <robot_base_frame>base_link</robot_base_frame>
-      <publish_odom>true</publish_odom>
-      <publish_odom_tf>true</publish_odom_tf>
-    </plugin>
-  </gazebo>
 
   <!-- ========================================= -->
   <!-- LIDAR SENSOR - IDENTIQUE -->

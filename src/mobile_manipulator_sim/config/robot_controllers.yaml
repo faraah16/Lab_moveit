@@ -10,6 +10,8 @@ controller_manager:
     
     gripper_controller:
       type: position_controllers/JointGroupPositionController
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
 
 arm_controller:
   ros__parameters:
@@ -23,6 +25,20 @@ arm_controller:
     state_interfaces:
       - position
       - velocity
+diff_drive_controller:
+  ros__parameters:
+    left_wheel_names: ["front_left_wheel_joint", "rear_left_wheel_joint"]
+    right_wheel_names: ["front_right_wheel_joint", "rear_right_wheel_joint"]
+
+    wheel_separation: 0.45
+    wheel_radius: 0.10
+
+    base_frame_id: base_link
+    odom_frame_id: odom
+
+    enable_odom_tf: true
+    publish_rate: 50.0
+    use_stamped_vel: false
 
 gripper_controller:
   ros__parameters:

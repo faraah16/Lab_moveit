@@ -8,6 +8,8 @@ from ament_index_python.packages import get_package_share_directory
 import xacro
 from launch.actions import ExecuteProcess
 import sys
+from launch.actions import TimerAction
+
 
 def generate_launch_description():
     # Packages
@@ -41,8 +43,12 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[robot_description, controller_config]
+        parameters=[
+            robot_description,
+            {'use_sim_time': True}
+        ]
     )
+
     
     # Spawn robot - START_STOP_ZONE (-5.0, 2.2)
     spawn_entity = Node(
@@ -57,6 +63,13 @@ def generate_launch_description():
     )
     
     # Controllers
+    load_diff_drive_controller = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_drive_controller'],
+        output='screen'
+    )
+
     load_joint_state_broadcaster = Node(
         package='controller_manager',
         executable='spawner',
@@ -92,10 +105,16 @@ def generate_launch_description():
     
     return LaunchDescription([
         gazebo,
+            # 2️⃣ Attendre un peu
+        TimerAction(
+            period=2.0,
+            actions=[spawn_entity]
+        ),
         robot_state_publisher,
         spawn_entity,
         load_joint_state_broadcaster,
         load_arm_controller,
         load_gripper_controller,
-        aruco_detector
+        aruco_detector,
+        load_diff_drive_controller
     ])
