@@ -56,7 +56,7 @@ def main(args=None):
     zones_to_test = [
         'blue_table',         # Table bleue
         'depot_table',        # Table de dépôt
-        'box_zone_1',         # Caisse 1
+        'yellow_crate_right_top',         # Caisse 1
         'charging_zone',      # Zone de recharge
     ]
     

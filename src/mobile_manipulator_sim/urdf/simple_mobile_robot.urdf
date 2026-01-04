@@ -654,5 +654,51 @@
     </sensor>
     <material>Gazebo/Black</material>
   </gazebo>
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- IMU SENSOR LINK -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.05 0.05 0.02"/>
+      </geometry>
+      <material name="dark_grey">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.05 0.05 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <!-- Joint IMU au base_link -->
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- GAZEBO IMU PLUGIN -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <namespace>/</namespace>
+          <remapping>~/out:=imu/data</remapping>
+        </ros>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+      </plugin>
+    </sensor>
+  </gazebo>
 
 </robot>

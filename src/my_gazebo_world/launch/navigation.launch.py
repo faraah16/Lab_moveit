@@ -16,6 +16,7 @@ def generate_launch_description():
     # Fichiers de config
     map_file = os.path.join(my_gazebo_dir, 'maps', 'warehouse_map_last_version.yaml')
     nav2_params_file = os.path.join(mobile_sim_dir, 'config', 'nav2_params.yaml')
+    ekf_config_file = os.path.join(mobile_sim_dir, 'config', 'ekf.yaml')
     
     # Arguments
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
@@ -31,6 +32,18 @@ def generate_launch_description():
         'autostart',
         default_value='true',
         description='Automatically startup the nav2 stack')
+    
+    # ═══════════════════════════════════════════════════════
+    # EKF NODE (Fusion IMU + Odométrie)
+    # ═══════════════════════════════════════════════════════
+    ekf_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[ekf_config_file],
+        remappings=[('odometry/filtered', 'odometry/filtered')]
+    )
     
     # Map Server (EXPLICITE)
     map_server_node = Node(
@@ -116,6 +129,9 @@ def generate_launch_description():
     return LaunchDescription([
         declare_use_sim_time_cmd,
         declare_autostart_cmd,
+        
+        # 0. Lancer EKF (Fusion IMU + Odom)
+        ekf_node,
         
         # 1. Lancer map_server en PREMIER
         map_server_node,

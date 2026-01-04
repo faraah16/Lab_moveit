@@ -55,7 +55,7 @@ def main(args=None):
     print("="*60)
     print("\n📍 Navigation vers blue_table")
     
-    success = orchestrator.go_to_zone('blue_table')
+    success = orchestrator.go_to_zone('yellow_crate_right_top')
     
     if success:
         print("\n" + "="*60)
