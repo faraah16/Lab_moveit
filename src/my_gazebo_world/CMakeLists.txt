@@ -14,7 +14,7 @@ install(DIRECTORY
   launch
   worlds
   urdf
-  models
+  #models
   materials
   maps
   DESTINATION share/${PROJECT_NAME}/

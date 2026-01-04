@@ -16,9 +16,9 @@ find_package(tf2_ros REQUIRED)
 install(DIRECTORY
   launch
   urdf
-  worlds
+ # worlds
   config
-  meshes
+  #meshes
   DESTINATION share/${PROJECT_NAME}/
 )
 

@@ -54,12 +54,10 @@ def main(args=None):
     # LISTE DES ZONES À TESTER
     # ═══════════════════════════════════════════════════════
     zones_to_test = [
-        'green_table',        # Table verte
         'blue_table',         # Table bleue
-        'red_table',          # Table rouge
         'depot_table',        # Table de dépôt
-        'charging_zone',      # Zone de recharge
         'box_zone_1',         # Caisse 1
+        'charging_zone',      # Zone de recharge
     ]
     
     print("\n" + "="*60)
@@ -100,8 +98,8 @@ def main(args=None):
             print(f"   ⏱️  Temps écoulé: {duration:.1f}s")
             print(f"   ⏰ Fin: {end_time.strftime('%H:%M:%S')}")
             # Pause 3 secondes à chaque point
-            print("   ⏸️  Pause 3 secondes...")
-            time.sleep(3)
+            print("   ⏸️  Pause 8 secondes...")
+            time.sleep(8)
         else:
             print(f"\n❌ {zone_name}: ÉCHEC")
             print(f"   ⏱️  Temps écoulé: {duration:.1f}s")

@@ -110,7 +110,7 @@ class MissionOrchestrator(Node):
             time.sleep(2.0)  # Délai initial augmenté
             
             # Vérifier que la frame "map" existe avec plusieurs tentatives
-            max_attempts = 10
+            max_attempts = 20
             tf_ready = False
             
             for attempt in range(max_attempts):
@@ -195,8 +195,8 @@ class MissionOrchestrator(Node):
             self.get_logger().info(f'🎯 Orientation cible: {math.degrees(target_angle):.1f}°')
             self.get_logger().info(f'🔄 Rotation nécessaire: {math.degrees(angle_diff):.1f}°')
             
-# ═══════════════════════════════════════════════════════
-# ÉTAPE 2: Rotation RIGIDE sur place (si > 10°)
+            # ═══════════════════════════════════════════════════════
+            # ÉTAPE 2: Rotation RIGIDE sur place (si > 10°)
             # ═══════════════════════════════════════════════════════
             if abs(angle_diff) > 0.175:  # ~10 degrés
                 self.get_logger().info(f'   ↻ ROTATION RIGIDE SUR PLACE...')
@@ -241,7 +241,7 @@ class MissionOrchestrator(Node):
                 # PHASE 1: Rotation avec feedback
                 self.get_logger().info(f'   📍 Phase 1: Rotation avec feedback temps réel')
 
-                tolerance = 0.20
+                tolerance = 0.05
                 max_iterations = 800
                 iteration = 0
 
@@ -293,10 +293,11 @@ class MissionOrchestrator(Node):
                 self.get_logger().info(f'   ✅ Rotation terminée!')
 
                 # ═══════════════════════════════════════════════════════
-                # VÉRIFICATION FINALE
+                # VÉRIFICATION FINALE ET CORRECTION SI NÉCESSAIRE
                 # ═══════════════════════════════════════════════════════
                 time.sleep(0.5)
                 final_yaw = get_current_yaw()
+
                 if final_yaw is not None:
                     final_error = target_angle - final_yaw
                     while final_error > math.pi:
@@ -309,12 +310,81 @@ class MissionOrchestrator(Node):
                     self.get_logger().info(f'      Orientation finale: {math.degrees(final_yaw):.1f}°')
                     self.get_logger().info(f'      Erreur: {math.degrees(final_error):.1f}°')
                     
-                    if abs(final_error) > 0.26:  # 15°
-                        self.get_logger().warn(f'   ⚠️  ROTATION INCOMPLÈTE !')
-                        self.get_logger().warn(f'   ⚠️  Risque de collision pendant navigation')
+                    # ⭐ TOLERANCE STRICTE : 3° maximum
+                    strict_tolerance = 0.05  # 3°
+                    
+                    if abs(final_error) > strict_tolerance:
+                        # ❌ ERREUR TROP GRANDE → CORRECTION !
+                        self.get_logger().warn(f'   ⚠️  ERREUR > 3° ! Rotation corrective...')
+                        
+                        # ROTATION CORRECTIVE (même mécanisme mais plus court)
+                        max_correction_iterations = 200
+                        correction_iteration = 0
+                        
+                        while correction_iteration < max_correction_iterations:
+                            rclpy.spin_once(self, timeout_sec=0.01)
+                            
+                            current_yaw = get_current_yaw()
+                            if current_yaw is None:
+                                break
+                            
+                            angle_error = target_angle - current_yaw
+                            while angle_error > math.pi:
+                                angle_error -= 2 * math.pi
+                            while angle_error < -math.pi:
+                                angle_error += 2 * math.pi
+                            
+                            # ✅ ARRÊT si < 3°
+                            if abs(angle_error) < strict_tolerance:
+                                self.get_logger().info(f'   ✅ Correction réussie! Erreur: {math.degrees(angle_error):.2f}°')
+                                break
+                            
+                            # Rotation douce
+                            speed_factor = max(0.3, min(1.0, abs(angle_error) / 0.3))
+                            rotation_speed = 0.6 * speed_factor  # Plus doux que la rotation principale
+                            
+                            if angle_error < 0:
+                                rotation_speed = -rotation_speed
+                            
+                            twist = Twist()
+                            twist.angular.z = rotation_speed
+                            cmd_vel_pub.publish(twist)
+                            
+                            if correction_iteration % 20 == 0:
+                                self.get_logger().info(
+                                    f'      [Correction {correction_iteration}] Erreur: {math.degrees(angle_error):+.1f}°'
+                                )
+                            
+                            correction_iteration += 1
+                            time.sleep(0.04)
+                        
+                        # Arrêt après correction
+                        twist = Twist()
+                        for _ in range(10):
+                            cmd_vel_pub.publish(twist)
+                            time.sleep(0.05)
+                        
+                        # Vérification APRÈS correction
+                        time.sleep(0.3)
+                        final_yaw = get_current_yaw()
+                        if final_yaw is not None:
+                            final_error = target_angle - final_yaw
+                            while final_error > math.pi:
+                                final_error -= 2 * math.pi
+                            while final_error < -math.pi:
+                                final_error += 2 * math.pi
+                            
+                            self.get_logger().info(f'   📊 Après correction:')
+                            self.get_logger().info(f'      Erreur finale: {math.degrees(final_error):.1f}°')
+                            
+                            if abs(final_error) < 0.08:  # 4.5°
+                                self.get_logger().info(f'   ✅ Rotation PRÉCISE atteinte !')
+                            else:
+                                self.get_logger().warn(f'   ⚠️  Rotation imprécise malgré correction')
                     else:
-                        self.get_logger().info(f'   ✅ Orientation correcte !')
-                
+                        # ✅ ERREUR < 3° dès le premier coup
+                        self.get_logger().info(f'   ✅ Rotation PRÉCISE ! (erreur < 3°)')
+
                 # ═══════════════════════════════════════════════════════
                 # RÉACTIVER NAV2
                 # ═══════════════════════════════════════════════════════
@@ -348,8 +418,171 @@ class MissionOrchestrator(Node):
         except Exception as e:
             self.get_logger().warn(f'⚠️  Erreur lors de la rotation: {e}')
             self.get_logger().warn(f'   → Navigation directe sans rotation préalable')
+    def go_to_zone_with_waypoint(self, zone_name):
+        """
+        Navigation avec waypoint intermédiaire pour chemin en L
+        VERSION CORRIGÉE : Waypoint avec marge de sécurité
+        """
+        self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        self.get_logger().info(f'🎯 MISSION WAYPOINT: Aller à {zone_name}')
+        self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
         
+        # Récupérer infos zone
+        zone_info = self.get_zone_info(zone_name)
+        if zone_info is None:
+            self.get_logger().error(f'❌ Zone "{zone_name}" inconnue !')
+            return False
         
+        # Appliquer offset
+        goal_x = zone_info["position"]["x"]
+        goal_y = zone_info["position"]["y"]
+        
+        if zone_info["function"] in ["pick_colored_box", "place_boxes"]:
+            goal_y += 0.2
+            self.get_logger().info(f'   🔧 Offset: +0.2m sur Y')
+        elif zone_info["function"] == "storage":
+            goal_x -= 0.3
+            self.get_logger().info(f'   🔧 Offset: -0.3m sur X')
+        
+        # Position actuelle
+        try:
+            transform = self.tf_buffer.lookup_transform(
+                'map', 
+                'base_link', 
+                rclpy.time.Time()
+            )
+            current_x = transform.transform.translation.x
+            current_y = transform.transform.translation.y
+            
+            self.get_logger().info(f'📍 Position actuelle: ({current_x:.2f}, {current_y:.2f})')
+            self.get_logger().info(f'🎯 Goal final: ({goal_x:.2f}, {goal_y:.2f})')
+            
+        except Exception as e:
+            self.get_logger().warn(f'⚠️  Erreur TF, navigation directe: {e}')
+            return self.go_to_zone(zone_name)
+        
+        # ═══════════════════════════════════════════════════════
+        # CALCULER WAYPOINT AVEC MARGE DE SÉCURITÉ
+        # ═══════════════════════════════════════════════════════
+        import math
+        
+        safety_margin = 1.0  # 1 mètre de marge
+        
+        # Calculer direction verticale
+        dy = goal_y - current_y
+        
+        if abs(dy) < 0.5:
+            # Si déplacement vertical trop petit, navigation directe
+            self.get_logger().info('ℹ️  Déplacement vertical < 0.5m, navigation directe')
+            return self.go_to_zone(zone_name)
+        
+        # Waypoint : 1m AVANT le goal sur l'axe Y
+        waypoint_x = current_x
+        
+        if dy > 0:
+            # Goal au nord : waypoint 1m avant (plus au sud)
+            waypoint_y = goal_y - safety_margin
+        else:
+            # Goal au sud : waypoint 1m avant (plus au nord)
+            waypoint_y = goal_y + safety_margin
+        
+        # Vérifier que waypoint n'est pas trop proche de la position actuelle
+        distance_to_waypoint = math.sqrt(
+            (waypoint_x - current_x)**2 + (waypoint_y - current_y)**2
+        )
+        
+        if distance_to_waypoint < 0.5:
+            self.get_logger().info('ℹ️  Waypoint trop proche, navigation directe')
+            return self.go_to_zone(zone_name)
+        
+        self.get_logger().info(f'')
+        self.get_logger().info(f'🔄 NAVIGATION EN 2 ÉTAPES (chemin en L)')
+        self.get_logger().info(f'   🛡️  Marge sécurité: {safety_margin}m')
+        self.get_logger().info(f'   📍 Waypoint sécurisé: ({waypoint_x:.2f}, {waypoint_y:.2f})')
+        self.get_logger().info(f'   🎯 Goal final: ({goal_x:.2f}, {goal_y:.2f})')
+        self.get_logger().info(f'')
+        
+        # ═══════════════════════════════════════════════════════
+        # ÉTAPE 1 : Navigation vers waypoint (vertical)
+        # ═══════════════════════════════════════════════════════
+        self.get_logger().info(f'🎯 ÉTAPE 1/2: Navigation vers waypoint (vertical)')
+        
+        self.rotate_towards_goal(waypoint_x, waypoint_y)
+        
+        # Clear costmaps
+        self.get_logger().info(f'   🧹 Nettoyage costmaps...')
+        try:
+            import subprocess
+            subprocess.run(
+                ['ros2', 'service', 'call', '/local_costmap/clear_entirely_local_costmap',
+                'nav2_msgs/srv/ClearEntireCostmap', '{}'],
+                capture_output=True, timeout=2
+            )
+            subprocess.run(
+                ['ros2', 'service', 'call', '/global_costmap/clear_entirely_global_costmap',
+                'nav2_msgs/srv/ClearEntireCostmap', '{}'],
+                capture_output=True, timeout=2
+            )
+        except:
+            pass
+        
+        time.sleep(0.5)
+        
+        success1 = self.nav_client.navigate_to_pose(
+            x=waypoint_x,
+            y=waypoint_y,
+            z=0.0,
+            orientation_w=1.0
+        )
+        
+        if not success1:
+            self.get_logger().warn('⚠️  Échec waypoint, tentative navigation directe')
+            return self.go_to_zone(zone_name)
+        
+        self.get_logger().info('✅ Waypoint atteint !')
+        time.sleep(3)  # ← Augmenter à 3s pour stabilisation
+        
+        # ═══════════════════════════════════════════════════════
+        # ÉTAPE 2 : Navigation vers goal (horizontal)
+        # ═══════════════════════════════════════════════════════
+        self.get_logger().info(f'')
+        self.get_logger().info(f'🎯 ÉTAPE 2/2: Navigation vers goal (horizontal)')
+        
+        self.rotate_towards_goal(goal_x, goal_y)
+        
+        # Clear costmaps
+        self.get_logger().info(f'   🧹 Nettoyage costmaps...')
+        try:
+            subprocess.run(
+                ['ros2', 'service', 'call', '/local_costmap/clear_entirely_local_costmap',
+                'nav2_msgs/srv/ClearEntireCostmap', '{}'],
+                capture_output=True, timeout=2
+            )
+            subprocess.run(
+                ['ros2', 'service', 'call', '/global_costmap/clear_entirely_global_costmap',
+                'nav2_msgs/srv/ClearEntireCostmap', '{}'],
+                capture_output=True, timeout=2
+            )
+        except:
+            pass
+        
+        time.sleep(0.5)
+        
+        success2 = self.nav_client.navigate_to_pose(
+            x=goal_x,
+            y=goal_y,
+            z=zone_info["position"]["z"],
+            orientation_w=zone_info["orientation"]["w"]
+        )
+        
+        if success2:
+            self.get_logger().info(f'✅ Arrivé à {zone_name} via waypoint !')
+            self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            return True
+        else:
+            self.get_logger().error(f'❌ Échec navigation vers {zone_name}')
+            self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            return False
     def go_to_zone(self, zone_name):
         """
         Navigue vers une zone nommée
