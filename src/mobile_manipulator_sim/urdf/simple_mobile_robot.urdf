@@ -578,7 +578,7 @@
     <material>Gazebo/Black</material>
   </gazebo>
   <!-- ========================================= -->
-  <!-- CAMÉRA RGB - POUR ARUCO DETECTION -->
+  <!-- CAMÉRA RGB - POUR ARUCO DETECTION :)  -->
   <!-- ========================================= -->
   
   <link name="camera_link">
