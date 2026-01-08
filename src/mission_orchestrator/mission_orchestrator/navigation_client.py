@@ -9,8 +9,11 @@ import time
 
 
 class NavigationClient(Node):
-    def __init__(self):
+    def __init__(self, orchestrator=None):
         super().__init__('navigation_client')
+        
+        # ⭐ NOUVEAU : Référence au MissionOrchestrator pour vérifier batterie
+        self.orchestrator = orchestrator
         
         # Action client pour Nav2
         self._action_client = ActionClient(
@@ -19,9 +22,21 @@ class NavigationClient(Node):
             'navigate_to_pose'
         )
         
+        # ⭐ NOUVEAU : Stocker le goal_handle pour pouvoir l'annuler
+        self.current_goal_handle = None
+        
         self.get_logger().info('🧭 Navigation Client initialisé')
     
-    def navigate_to_pose(self, x, y, z=0.0, orientation_w=1.0, frame_id='map'):
+    def cancel_goal(self):
+        """Annule le goal de navigation en cours"""
+        if self.current_goal_handle:
+            self.get_logger().warn('🛑 Annulation du goal Nav2...')
+            cancel_future = self.current_goal_handle.cancel_goal_async()
+            rclpy.spin_until_future_complete(self, cancel_future, timeout_sec=2.0)
+            self.get_logger().info('✅ Goal Nav2 annulé')
+            self.current_goal_handle = None
+    
+    def navigate_to_pose(self, x, y, z=0.0, orientation_w=1.0, frame_id='map', is_charging_mission=False):
         """
         Navigue vers une position donnée
         
@@ -72,11 +87,38 @@ class NavigationClient(Node):
         
         self.get_logger().info('✅ Goal accepté, navigation en cours...')
         
-        # Attendre le résultat
-        result_future = goal_handle.get_result_async()
-        rclpy.spin_until_future_complete(self, result_future)
+        # ⭐ NOUVEAU : Stocker le goal_handle
+        self.current_goal_handle = goal_handle
         
+        # ═══════════════════════════════════════════════════════
+        # ATTENTE DU RÉSULTAT AVEC VÉRIFICATION BATTERIE
+        # ═══════════════════════════════════════════════════════
+        result_future = goal_handle.get_result_async()
+        
+        # Boucle d'attente avec vérification batterie toutes les 0.5s
+        while not result_future.done():
+            # ⭐ VÉRIFICATION BATTERIE (sauf si on va charger !)
+            if not is_charging_mission and self.orchestrator and self.orchestrator.low_battery_mode:
+                self.get_logger().warn('')
+                self.get_logger().warn('🚨🚨🚨 BATTERIE FAIBLE DÉTECTÉE PENDANT NAV2 ! 🚨🚨🚨')
+                self.get_logger().warn(f'   Niveau: {self.orchestrator.battery_level:.1f}%')
+                self.get_logger().warn('   → ANNULATION du goal de navigation')
+                self.get_logger().warn('')
+                
+                # Annuler le goal
+                cancel_future = goal_handle.cancel_goal_async()
+                rclpy.spin_until_future_complete(self, cancel_future, timeout_sec=2.0)
+                
+                self.get_logger().info('✅ Goal Nav2 annulé - Retour pour aller charger')
+                self.current_goal_handle = None
+                return False
+            
+            # Attendre un peu avant de revérifier
+            rclpy.spin_once(self, timeout_sec=0.5)
+        
+        # Récupérer le résultat
         result = result_future.result()
+        self.current_goal_handle = None
         
         if result.status == 4:  # SUCCEEDED
             self.get_logger().info('✅ Navigation réussie !')
@@ -108,4 +150,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-

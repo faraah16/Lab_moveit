@@ -89,7 +89,16 @@ def generate_launch_description():
         output='screen',
         emulate_tty=True,
     )
-    
+    # ═══════════════════════════════════════════════════════
+    # BATTERY MANAGER
+    # ═══════════════════════════════════════════════════════
+    battery_manager_node = Node(
+        package='battery_manager',
+        executable='battery_manager_node',
+        name='battery_manager',
+        output='screen'
+    )
+
     return LaunchDescription([
         gazebo,
         robot_state_publisher,
@@ -97,5 +106,6 @@ def generate_launch_description():
         load_joint_state_broadcaster,
         load_arm_controller,
         load_gripper_controller,
-        aruco_detector
+        aruco_detector,
+        battery_manager_node
     ])

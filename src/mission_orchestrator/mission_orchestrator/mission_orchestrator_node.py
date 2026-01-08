@@ -12,6 +12,7 @@ from tf2_ros import Buffer, TransformListener
 import time
 import subprocess
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy, HistoryPolicy
+from std_msgs.msg import String, Float32
 # Importer le Navigation Client
 from mission_orchestrator.navigation_client import NavigationClient
 
@@ -28,7 +29,7 @@ class MissionOrchestrator(Node):
         
         # Initialiser le Navigation Client
         self.get_logger().info('🧭 Initialisation du Navigation Client...')
-        self.nav_client = NavigationClient()
+        self.nav_client = NavigationClient(orchestrator=self)
 
 
         # ═══════════════════════════════════════════════════════
@@ -37,11 +38,115 @@ class MissionOrchestrator(Node):
         self.get_logger().info('🔧 Initialisation du TF Buffer...')
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
+        # ═══════════════════════════════════════════════════════
+        # GESTION BATTERIE
+        # ═══════════════════════════════════════════════════════
+        self.battery_level = 100.0
+        self.current_zone = 'start_stop_zone'
+        self.low_battery_mode = False
+        self.charging_complete = False
+        self.navigation_in_progress = False  # ← NOUVEAU : pour surveiller navigation
+        
+        # Publisher pour zone actuelle
+        self.zone_pub = self.create_publisher(
+            String,
+            '/current_zone',
+            10
+        )
+        
+        # Subscriber batterie
+        self.battery_sub = self.create_subscription(
+            Float32,
+            '/battery_status',
+            self.battery_callback,
+            10
+        )
+        
+        self.battery_alert_sub = self.create_subscription(
+            String,
+            '/battery_alert',
+            self.battery_alert_callback,
+            10
+        )
+        # ═══════════════════════════════════════════════════════
+        # TIMER DE SURVEILLANCE BATTERIE (toutes les 1 seconde)
+        # ═══════════════════════════════════════════════════════
+        self.battery_check_timer = self.create_timer(
+            1.0,  # Vérification toutes les 1 seconde
+            self.periodic_battery_check
+)
+        self.get_logger().info('🔋 Gestion batterie activée + surveillance 1Hz')
         self.get_logger().info('✅ TF Buffer initialisé')
         
 
 
         self.get_logger().info('✅ Mission Orchestrator prêt !')
+    def battery_callback(self, msg):
+        """Mise à jour niveau batterie"""
+        self.battery_level = msg.data
+    
+    def battery_alert_callback(self, msg):
+        """Gestion alertes batterie"""
+        if msg.data == 'LOW_BATTERY':
+            self.get_logger().warn('⚠️  BATTERIE FAIBLE ! Mode LOW_BATTERY activé')
+            self.low_battery_mode = True
+            self.charging_complete = False
+            
+        elif msg.data == 'CHARGED':
+            self.get_logger().info('✅ BATTERIE CHARGÉE ! Prêt à reprendre')
+            self.charging_complete = True
+            self.low_battery_mode = False
+    
+    def periodic_battery_check(self):
+        """
+        Vérification périodique de la batterie (appelée toutes les 1 seconde)
+        Annule la navigation en cours si batterie faible
+        """
+        # ⭐⭐⭐ LOG DE DEBUG PERMANENT (même si pas en navigation)
+        self.get_logger().info(
+            f'🔍 [BATTERY_CHECK] '
+            f'level={self.battery_level:.1f}% | '
+            f'low_mode={self.low_battery_mode} | '
+            f'navigating={self.navigation_in_progress} | '
+            f'zone={self.current_zone}'
+        )
+    
+        # Vérifier si batterie faible ET navigation en cours ET pas déjà vers charging
+        if (self.low_battery_mode and 
+            self.navigation_in_progress and 
+            self.current_zone != 'charging_zone'):
+            
+            self.get_logger().warn('')
+            self.get_logger().warn('🚨🚨🚨 BATTERIE FAIBLE PENDANT NAVIGATION ! 🚨🚨🚨')
+            self.get_logger().warn(f'   Niveau: {self.battery_level:.1f}%')
+            self.get_logger().warn(f'   Zone: {self.current_zone}')
+            self.get_logger().warn('   → INTERRUPTION navigation en cours')
+            self.get_logger().warn('')
+            
+            # Annuler le goal de navigation
+            try:
+                self.nav_client.cancel_goal()
+                self.get_logger().info('   ✅ Goal annulé')
+            except Exception as e:
+                self.get_logger().warn(f'   ⚠️  Erreur annulation: {e}')
+            
+            # Marquer navigation terminée
+            self.navigation_in_progress = False
+            
+            # Attendre stabilisation
+            time.sleep(2.0)
+            
+            # Aller charger IMMÉDIATEMENT
+            self.get_logger().warn('   🔌 Navigation PRIORITAIRE vers charging_zone...')
+            self.go_to_zone('charging_zone')
+    
+    def publish_current_zone(self, zone_name):
+        """Publie la zone actuelle"""
+        self.current_zone = zone_name
+        msg = String()
+        msg.data = zone_name
+        self.zone_pub.publish(msg)
+        self.get_logger().info(f'📍 Zone actuelle: {zone_name}')
     
     def load_zones(self):
         """Charge le fichier YAML des zones"""
@@ -248,7 +353,28 @@ class MissionOrchestrator(Node):
                 while iteration < max_iterations:
                     # ⭐ CRITIQUE : Spinner pour recevoir messages TF
                     rclpy.spin_once(self, timeout_sec=0.01)
-                    
+                    # ═══════════════════════════════════════════════════════
+                    # VÉRIFICATION BATTERIE PENDANT ROTATION
+                    # ═══════════════════════════════════════════════════════
+                    if iteration % 50 == 0:  # Vérifier toutes les 50 itérations (~2s)
+                        if self.low_battery_mode:
+                            self.get_logger().warn('🚨 BATTERIE FAIBLE PENDANT ROTATION !')
+                            self.get_logger().warn('   → Arrêt rotation et navigation vers charging')
+                            # Arrêt immédiat
+                            twist = Twist()
+                            for _ in range(5):
+                                cmd_vel_pub.publish(twist)
+                                time.sleep(0.05)
+                            # Réactiver Nav2
+                            try:
+                                subprocess.run(
+                                    ['ros2', 'lifecycle', 'set', '/controller_server', 'activate'],
+                                    capture_output=True, timeout=5
+                                )
+                            except:
+                                pass
+                            # Sortir de la fonction rotate
+                            return
                     current_yaw = get_current_yaw()
                     if current_yaw is None:
                         break
@@ -418,6 +544,9 @@ class MissionOrchestrator(Node):
         except Exception as e:
             self.get_logger().warn(f'⚠️  Erreur lors de la rotation: {e}')
             self.get_logger().warn(f'   → Navigation directe sans rotation préalable')
+
+
+            
     def go_to_zone_with_waypoint(self, zone_name):
         """
         Navigation avec waypoint intermédiaire pour chemin en L
@@ -532,7 +661,8 @@ class MissionOrchestrator(Node):
             x=waypoint_x,
             y=waypoint_y,
             z=0.0,
-            orientation_w=1.0
+            orientation_w=1.0,
+            is_charging_mission=False  # ← AJOUTER
         )
         
         if not success1:
@@ -567,14 +697,15 @@ class MissionOrchestrator(Node):
             pass
         
         time.sleep(0.5)
-        
+        self.navigation_in_progress = True
         success2 = self.nav_client.navigate_to_pose(
             x=goal_x,
             y=goal_y,
             z=zone_info["position"]["z"],
-            orientation_w=zone_info["orientation"]["w"]
+            orientation_w=zone_info["orientation"]["w"],
+            is_charging_mission=False  # ← AJOUTER
         )
-        
+        self.navigation_in_progress = False
         if success2:
             self.get_logger().info(f'✅ Arrivé à {zone_name} via waypoint !')
             self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
@@ -583,6 +714,42 @@ class MissionOrchestrator(Node):
             self.get_logger().error(f'❌ Échec navigation vers {zone_name}')
             self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
             return False
+
+
+    def check_battery_and_charge(self):
+        """
+        Vérifie batterie et va charger si nécessaire
+        Returns:
+            bool: True si besoin de charger, False sinon
+        """
+        if self.low_battery_mode and not self.charging_complete:
+            self.get_logger().warn('')
+            self.get_logger().warn('🔋🔋🔋 BATTERIE FAIBLE DÉTECTÉE 🔋🔋🔋')
+            self.get_logger().warn(f'   Niveau actuel: {self.battery_level:.1f}%')
+            self.get_logger().warn('   → Navigation PRIORITAIRE vers charging_zone')
+            self.get_logger().warn('')
+            
+            # Aller charger
+            success = self.go_to_zone('charging_zone')
+            
+            if success:
+                self.get_logger().info('🔌 Arrivé à la charging_zone')
+                self.get_logger().info('⏳ Attente charge complète...')
+                
+                # Attendre que batterie soit chargée
+                while not self.charging_complete:
+                    rclpy.spin_once(self, timeout_sec=1.0)
+                    if self.battery_level >= 95.0:
+                        break
+                    time.sleep(5)
+                
+                self.get_logger().info('✅ Charge terminée ! Reprise des missions.')
+                return True
+            else:
+                self.get_logger().error('❌ Échec navigation vers charging_zone !')
+                return False
+        
+        return False        
     def go_to_zone(self, zone_name):
         """
         Navigue vers une zone nommée
@@ -593,10 +760,16 @@ class MissionOrchestrator(Node):
         Returns:
             bool: True si succès, False sinon
         """
+        # ═══════════════════════════════════════════════════════
+        # VÉRIFICATION BATTERIE (sauf si on va déjà charger !)
+        # ═══════════════════════════════════════════════════════
+        if zone_name != 'charging_zone':  # ← CRITIQUE : éviter récursion
+            if self.check_battery_and_charge():
+                self.get_logger().info('✅ Batterie rechargée, reprise de la mission')
+        
         self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
         self.get_logger().info(f'🎯 MISSION: Aller à {zone_name}')
         self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-        
         # 1. Récupérer les infos de la zone
         self.get_logger().info(f'📍 Récupération des infos de la zone...')
         zone_info = self.get_zone_info(zone_name)
@@ -660,20 +833,42 @@ class MissionOrchestrator(Node):
             pass
 
         time.sleep(0.5)
+        
+        # ═══════════════════════════════════════════════════════
+        # VÉRIFICATION BATTERIE AVANT NAVIGATION NAV2
+        # ═══════════════════════════════════════════════════════
+        if self.low_battery_mode and zone_name != 'charging_zone':
+            self.get_logger().warn('🚨 BATTERIE FAIBLE DÉTECTÉE AVANT NAV2 !')
+            self.get_logger().warn('   → Annulation et navigation vers charging_zone')
+            return self.go_to_zone('charging_zone')
+        
+        # Marquer que navigation commence
+        self.navigation_in_progress = True
+        # ⭐ NOUVEAU : Indiquer si c'est une mission de charge
+        is_charging = (zone_name == 'charging_zone')
 
         success = self.nav_client.navigate_to_pose(
             x=x,
             y=y,
             z=zone_info["position"]["z"],
-            orientation_w=zone_info["orientation"]["w"]
+            orientation_w=zone_info["orientation"]["w"],
+            is_charging_mission=is_charging  
         )
+        # Marquer que navigation est terminée
+        self.navigation_in_progress = False
         # 3. Retour du résultat
         if success:
-            self.get_logger().info(f'✅ Arrivé à {zone_name} !')
-            self.get_logger().info(f'📸 Robot positionné à ~0.2m du marqueur')
-            self.get_logger().info(f'💡 Prêt pour manipulation')
-            self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-            return True
+                    self.get_logger().info(f'✅ Arrivé à {zone_name} !')
+                    self.get_logger().info(f'📸 Robot positionné à ~0.2m du marqueur')
+                    self.get_logger().info(f'💡 Prêt pour manipulation')
+                    
+                    # ═══════════════════════════════════════════════════════
+                    # PUBLIER ZONE ACTUELLE (pour battery_manager)
+                    # ═══════════════════════════════════════════════════════
+                    self.publish_current_zone(zone_name)
+                    
+                    self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+                    return True
         else:
             self.get_logger().error(f'❌ Échec de la navigation vers {zone_name}')
             self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')

@@ -1,0 +1,29 @@
+# Configuration du stock du warehouse
+# Modifié automatiquement par le système
+
+stock:
+  red_boxes:
+    total: 5              # Total de boxes rouges
+    dans_depot: 2         # Boxes non triées au depot
+    dans_table: 3         # Boxes déjà sur red_table
+    
+  blue_boxes:
+    total: 3
+    dans_depot: 1
+    dans_table: 2
+    
+  yellow_boxes:
+    total: 2
+    dans_depot: 0
+    dans_table: 2
+
+# Capacités des zones
+capacites:
+  depot_table: 20         # Max boxes que peut contenir depot
+  red_table: 10
+  blue_table: 10
+  yellow_crate_left: 5    # Pour commandes
+  yellow_crate_right: 5   # Pour commandes
+
+# Dernière mise à jour
+last_update: "2025-01-08 19:00:00"
