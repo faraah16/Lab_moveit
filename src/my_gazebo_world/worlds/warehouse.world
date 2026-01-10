@@ -1953,7 +1953,7 @@
         </visual>
       </link>
     </model>
-    <model name='cardboard_package_right'>
+    <model name='red_box_1'>
       <pose>3.5 -4.41 0.72 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
@@ -2004,6 +2004,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
+      <static>1</static>
     </model>
     <gui fullscreen='0'>
       <camera name='user_camera'>
@@ -2026,7 +2027,7 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='cardboard_package_right_clone'>
+    <model name='yellow_box_1'>
       <pose>4.05543 -4.32537 0.72 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
@@ -2078,7 +2079,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
-    <model name='cardboard_package_right_clone_0'>
+    <model name='yellow_box_2'>
       <pose>2.87812 -4.40148  0.72 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
@@ -2130,7 +2131,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
-    <model name='cardboard_package_right_clone_1'>
+    <model name='red_box_2'>
       <pose>3.24058 -4.10845 0.72 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
@@ -2182,7 +2183,7 @@
         <kinematic>0</kinematic>
       </link>
     </model>
-    <model name='cardboard_package_right_clone_2'>
+    <model name='blue_box_1'>
       <pose>3.84717 -4.05499  0.72 0 -0 0</pose>
       <static>1</static>
       <link name='link'>
@@ -2416,6 +2417,13 @@
     </model>
     <plugin name='gazebo_ros_factory' filename='libgazebo_ros_factory.so'/>
     <plugin name='gazebo_ros_init' filename='libgazebo_ros_init.so'/>
+    <!-- PLUGIN POUR LIRE L'ÉTAT DES MODÈLES -->
+    <plugin name='gazebo_ros_state' filename='libgazebo_ros_state.so'>
+      <ros>
+        <namespace>/gazebo</namespace>
+      </ros>
+      <update_rate>10.0</update_rate>
+    </plugin>
     <!-- ========================================= -->
     <!-- MARKERS ARUCO AU SOL DANS LES ZONES COLORÉES -->
     <!-- ========================================= -->

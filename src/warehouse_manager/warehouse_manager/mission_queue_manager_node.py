@@ -41,7 +41,13 @@ class MissionQueueManager(Node):
             self.command_callback,
             10
         )
-        
+        # Subscriber pour feedback missions
+        self.feedback_sub = self.create_subscription(
+            String,
+            '/warehouse/mission_feedback',
+            self.feedback_callback,
+            10
+        )
         # Publishers
         self.mission_pub = self.create_publisher(
             String,
@@ -271,21 +277,39 @@ class MissionQueueManager(Node):
         msg.data = yaml.dump(mission)
         self.mission_pub.publish(msg)
         
+        # Marquer robot occupé
         self.robot_busy = True
-        
-        # Simuler fin de mission (à remplacer par feedback réel plus tard)
-        # Pour l'instant, on suppose que la mission prend 10s
-        import time
-        time.sleep(10)
-        self.robot_busy = False
-        
-        self.get_logger().info('✅ Mission terminée (simulé)')
         
         # Afficher file restante
         if self.mission_queue:
             self.display_queue()
-
-
+    def feedback_callback(self, msg):
+        """Reçoit le feedback de fin de mission"""
+        try:
+            feedback = yaml.safe_load(msg.data)
+            mission_type = feedback.get('mission_type', 'unknown')
+            description = feedback.get('description', 'Mission')
+            success = feedback.get('success', False)
+            
+            if success:
+                self.get_logger().info('')
+                self.get_logger().info('✅ FEEDBACK REÇU: Mission terminée avec succès')
+                self.get_logger().info(f'   {description}')
+                self.get_logger().info('')
+            else:
+                self.get_logger().error('')
+                self.get_logger().error('❌ FEEDBACK REÇU: Mission échouée')
+                self.get_logger().error(f'   {description}')
+                self.get_logger().error('')
+            
+            # Marquer robot libre
+            self.robot_busy = False
+            self.current_mission = None
+            
+            self.get_logger().info('🤖 Robot disponible pour prochaine mission')
+            
+        except Exception as e:
+            self.get_logger().error(f'❌ Erreur traitement feedback: {e}')
 def main(args=None):
     rclpy.init(args=args)
     manager = MissionQueueManager()

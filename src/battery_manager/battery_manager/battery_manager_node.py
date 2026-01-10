@@ -10,7 +10,7 @@ class BatteryManager(Node):
         
         # État batterie
         self.battery_level = 100.0
-        self.discharge_rate = 0.5  # % par seconde
+        self.discharge_rate = 0.0083    # % par seconde
         self.low_battery_threshold = 20.0
         self.charged_threshold = 95.0
         self.is_charging = False

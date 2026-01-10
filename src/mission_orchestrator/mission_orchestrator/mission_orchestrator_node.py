@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import yaml
+from datetime import datetime
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Pose
@@ -68,6 +70,24 @@ class MissionOrchestrator(Node):
             self.battery_alert_callback,
             10
         )
+        # ═══════════════════════════════════════════════════════
+        # SUBSCRIBER POUR MISSIONS WAREHOUSE
+        # ═══════════════════════════════════════════════════════
+        self.mission_sub = self.create_subscription(
+            String,
+            '/warehouse/execute_mission',
+            self.mission_callback,
+            10
+        )
+        
+        # Publisher pour feedback missions
+        self.mission_feedback_pub = self.create_publisher(
+            String,
+            '/warehouse/mission_feedback',
+            10
+        )
+        
+        self.get_logger().info('📦 Abonnement aux missions warehouse activé')
         # ═══════════════════════════════════════════════════════
         # TIMER DE SURVEILLANCE BATTERIE (toutes les 1 seconde)
         # ═══════════════════════════════════════════════════════
@@ -750,6 +770,207 @@ class MissionOrchestrator(Node):
                 return False
         
         return False        
+    
+    def mission_callback(self, msg):
+        """Reçoit et exécute les missions du warehouse"""
+        try:
+            mission = yaml.safe_load(msg.data)
+            mission_type = mission.get('type', 'unknown')
+            description = mission.get('description', 'Mission inconnue')
+            
+            self.get_logger().info('')
+            self.get_logger().info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            self.get_logger().info(f'📦 MISSION REÇUE: {description}')
+            self.get_logger().info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            self.get_logger().info('')
+            
+            success = False
+            
+            # ═══════════════════════════════════════════════════════
+            # EXÉCUTION SELON TYPE DE MISSION
+            # ═══════════════════════════════════════════════════════
+            
+            if mission_type == 'arrival' or mission_type == 'arrival_for_order':
+                # Mission de tri d'arrivage
+                success = self.execute_arrival_mission(mission)
+            
+            elif mission_type == 'order':
+                # Mission de commande client
+                success = self.execute_order_mission(mission)
+            
+            elif mission_type == 'stop':
+                # Arrêt soft
+                success = self.execute_stop_mission(mission)
+            
+            elif mission_type == 'emergency_stop':
+                # Arrêt d'urgence
+                success = self.execute_emergency_stop(mission)
+            
+            else:
+                self.get_logger().warn(f'⚠️  Type de mission inconnu: {mission_type}')
+                success = False
+            
+            # ═══════════════════════════════════════════════════════
+            # ENVOYER FEEDBACK
+            # ═══════════════════════════════════════════════════════
+            feedback = {
+                'mission_type': mission_type,
+                'description': description,
+                'success': success,
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            
+            feedback_msg = String()
+            feedback_msg.data = yaml.dump(feedback)
+            self.mission_feedback_pub.publish(feedback_msg)
+            
+            if success:
+                self.get_logger().info('')
+                self.get_logger().info('✅ MISSION TERMINÉE AVEC SUCCÈS')
+                self.get_logger().info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+                self.get_logger().info('')
+            else:
+                self.get_logger().error('')
+                self.get_logger().error('❌ MISSION ÉCHOUÉE')
+                self.get_logger().error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+                self.get_logger().error('')
+        
+        except Exception as e:
+            self.get_logger().error(f'❌ Erreur traitement mission: {e}')
+    
+    def execute_arrival_mission(self, mission):
+        """Exécute une mission de tri d'arrivage"""
+        self.get_logger().info('📦 MISSION: Tri d\'arrivage')
+        self.get_logger().info('   → Navigation vers depot_table')
+        
+        # Aller au depot pour récupérer les boxes
+        success = self.go_to_zone('depot_table')
+        
+        if not success:
+            self.get_logger().error('❌ Échec navigation vers depot_table')
+            return False
+        
+        self.get_logger().info('✅ Arrivé au depot_table')
+        
+        # Simuler le tri (attente 5s)
+        self.get_logger().info('🔄 Tri des boxes en cours...')
+        import time
+        time.sleep(5)
+        
+        # TODO: Implémenter pick & place avec MoveIt2
+        # Pour l'instant, on simule le tri
+        
+        arrival_data = mission.get('data', {})
+        total_boxes = mission.get('total_boxes', 0)
+        
+        self.get_logger().info(f'✅ Tri de {total_boxes} boxes terminé (simulé)')
+        self.get_logger().info('💡 Les boxes sont maintenant sur leurs tables respectives')
+        
+        return True
+    
+    def execute_order_mission(self, mission):
+        """Exécute une mission de commande client"""
+        order = mission.get('data', {})
+        order_number = order.get('number', 'N/A')
+        items = order.get('items', {})
+        destination = order.get('destination', 'yellow_crate_left')
+        
+        self.get_logger().info(f'🎯 MISSION: Commande {order_number}')
+        self.get_logger().info(f'   Destination: {destination}')
+        
+        # Pour chaque item à récupérer
+        for color, qty in items.items():
+            if qty > 0:
+                # Déterminer la table source
+                if 'red' in color:
+                    table = 'red_table'
+                elif 'blue' in color:
+                    table = 'blue_table'
+                elif 'yellow' in color:
+                    table = 'yellow_table'
+                else:
+                    continue
+                
+                color_name = color.replace('_boxes', '').title()
+                
+                self.get_logger().info(f'')
+                self.get_logger().info(f'📦 Récupération: {qty}x {color_name}')
+                self.get_logger().info(f'   → Navigation vers {table}')
+                
+                # Aller à la table
+                success = self.go_to_zone(table)
+                
+                if not success:
+                    self.get_logger().error(f'❌ Échec navigation vers {table}')
+                    return False
+                
+                self.get_logger().info(f'✅ Arrivé à {table}')
+                
+                # Simuler pick
+                self.get_logger().info(f'🦾 Pick de {qty} box(es) en cours...')
+                import time
+                time.sleep(3)
+                self.get_logger().info(f'✅ {qty} box(es) récupérée(s)')
+        
+        # Aller à la destination
+        self.get_logger().info('')
+        self.get_logger().info(f'🚚 Transport vers destination')
+        self.get_logger().info(f'   → Navigation vers {destination}')
+        
+        success = self.go_to_zone(destination)
+        
+        if not success:
+            self.get_logger().error(f'❌ Échec navigation vers {destination}')
+            return False
+        
+        self.get_logger().info(f'✅ Arrivé à {destination}')
+        
+        # Simuler place
+        self.get_logger().info('🦾 Dépôt des boxes en cours...')
+        import time
+        time.sleep(3)
+        
+        self.get_logger().info(f'✅ Commande {order_number} préparée !')
+        
+        return True
+    
+    def execute_stop_mission(self, mission):
+        """Exécute un arrêt soft (retour start/stop)"""
+        self.get_logger().info('🛑 MISSION: Arrêt SOFT')
+        self.get_logger().info('   → Retour à start_stop_zone')
+        
+        success = self.go_to_zone('start_stop_zone')
+        
+        if success:
+            self.get_logger().info('✅ Robot arrêté à start_stop_zone')
+            self.get_logger().info('💡 Prêt pour la prochaine mission')
+        else:
+            self.get_logger().error('❌ Échec retour à start_stop_zone')
+        
+        return success
+    
+    def execute_emergency_stop(self, mission):
+        """Exécute un arrêt d'urgence"""
+        self.get_logger().error('🚨 MISSION: ARRÊT D\'URGENCE')
+        self.get_logger().error('   → Retour IMMÉDIAT à start_stop_zone')
+        
+        # Annuler toute navigation en cours
+        try:
+            self.nav_client.cancel_goal()
+            self.get_logger().warn('   ⚠️  Navigation annulée')
+        except:
+            pass
+        
+        # Navigation immédiate
+        success = self.go_to_zone('start_stop_zone')
+        
+        if success:
+            self.get_logger().info('✅ Robot arrêté (urgence)')
+        else:
+            self.get_logger().error('❌ Échec arrêt d\'urgence')
+        
+        return success
+
     def go_to_zone(self, zone_name):
         """
         Navigue vers une zone nommée

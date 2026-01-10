@@ -1,0 +1,469 @@
+[INFO] [launch]: All log files can be found below /home/douaa/.ros/log/2026-01-09-23-18-45-359335-douaa-VirtualBox-11156
+[INFO] [launch]: Default logging verbosity is set to INFO
+
+╔════════════════════════════════════════════════════════════╗
+║  🎮 GROUPE 1: SIMULATION                                   ║
+╚════════════════════════════════════════════════════════════╝
+
+╔════════════════════════════════════════════════════════════╗
+║  🧭 GROUPE 2: NAVIGATION                                   ║
+╚════════════════════════════════════════════════════════════╝
+
+╔════════════════════════════════════════════════════════════╗
+║  🏭 GROUPE 3: WAREHOUSE SYSTEM                             ║
+╚════════════════════════════════════════════════════════════╝
+[INFO] [gzserver-1]: process started with pid [11158]
+[INFO] [gzclient-2]: process started with pid [11160]
+[INFO] [robot_state_publisher-3]: process started with pid [11162]
+[INFO] [printf-4]: process started with pid [11164]
+[INFO] [printf-4]: process has finished cleanly [pid 11164]
+[INFO] [spawner-5]: process started with pid [11166]
+[INFO] [spawner-6]: process started with pid [11168]
+[INFO] [spawner-7]: process started with pid [11170]
+[INFO] [printf-8]: process started with pid [11172]
+[INFO] [printf-8]: process has finished cleanly [pid 11172]
+[INFO] [printf-9]: process started with pid [11183]
+[INFO] [printf-9]: process has finished cleanly [pid 11183]
+[INFO] [printf-10]: process started with pid [11185]
+[INFO] [printf-10]: process has finished cleanly [pid 11185]
+[INFO] [lifecycle_manager-11]: process started with pid [11187]
+[INFO] [printf-12]: process started with pid [11189]
+[INFO] [printf-12]: process has finished cleanly [pid 11189]
+[INFO] [lifecycle_manager-13]: process started with pid [11191]
+[INFO] [controller_server-14]: process started with pid [11202]
+[INFO] [smoother_server-15]: process started with pid [11208]
+[INFO] [planner_server-16]: process started with pid [11218]
+[INFO] [behavior_server-17]: process started with pid [11222]
+[INFO] [bt_navigator-18]: process started with pid [11234]
+[INFO] [waypoint_follower-19]: process started with pid [11237]
+[INFO] [velocity_smoother-20]: process started with pid [11257]
+[INFO] [lifecycle_manager-21]: process started with pid [11270]
+[INFO] [printf-22]: process started with pid [11281]
+[INFO] [printf-22]: process has finished cleanly [pid 11281]
+[INFO] [printf-23]: process started with pid [11285]
+[INFO] [printf-23]: process has finished cleanly [pid 11285]
+[INFO] [printf-24]: process started with pid [11304]
+[INFO] [printf-24]: process has finished cleanly [pid 11304]
+[INFO] [printf-25]: process started with pid [11307]
+[INFO] [printf-25]: process has finished cleanly [pid 11307]
+[printf-4] [1;34m[ROBOT][0m 
+[printf-8] [1;35m[ARUCO][0m 
+[printf-9] [1;36m[EKF][0m 
+[printf-10] [1;32m[MAP][0m 
+[printf-12] [1;33m[AMCL][0m 
+[printf-22] [1;93m[BATTERY][0m 
+[printf-23] [1;96m[ORCHESTR][0m 
+[printf-24] [1;92m[STOCK][0m 
+[printf-25] [1;95m[QUEUE][0m 
+[robot_state_publisher-3] [WARN] [1767997126.366666426] [kdl_parser]: The root link base_link has an inertia specified in the URDF, but KDL does not support a root link with an inertia.  As a workaround, you can add an extra dummy link to your URDF.
+[printf-4] printf: warning: ignoring excess arguments, starting with ‘/opt/ros/humble/lib/gazebo_ros/spawn_entity.py’
+[printf-8] printf: warning: ignoring excess arguments, starting with ‘python3’
+[printf-9] printf: warning: ignoring excess arguments, starting with ‘/opt/ros/humble/lib/robot_localization/ekf_node’
+[printf-10] printf: warning: ignoring excess arguments, starting with ‘/opt/ros/humble/lib/nav2_map_server/map_server’
+[lifecycle_manager-11] [INFO] [1767997126.334474310] [lifecycle_manager_map]: Creating
+[lifecycle_manager-11] [INFO] [1767997126.339945067] [lifecycle_manager_map]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[printf-12] printf: warning: ignoring excess arguments, starting with ‘/opt/ros/humble/lib/nav2_amcl/amcl’
+[lifecycle_manager-13] [INFO] [1767997126.354557816] [lifecycle_manager_localization]: Creating
+[lifecycle_manager-13] [INFO] [1767997126.360331327] [lifecycle_manager_localization]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[controller_server-14] [INFO] [1767997126.524788673] [controller_server]: 
+[controller_server-14] 	controller_server lifecycle node launched. 
+[controller_server-14] 	Waiting on external lifecycle transitions to activate
+[controller_server-14] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[smoother_server-15] [INFO] [1767997126.579341154] [smoother_server]: 
+[smoother_server-15] 	smoother_server lifecycle node launched. 
+[smoother_server-15] 	Waiting on external lifecycle transitions to activate
+[smoother_server-15] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-16] [INFO] [1767997126.385993541] [planner_server]: 
+[planner_server-16] 	planner_server lifecycle node launched. 
+[planner_server-16] 	Waiting on external lifecycle transitions to activate
+[planner_server-16] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-16] [INFO] [1767997126.387144896] [planner_server]: Creating
+[planner_server-16] [INFO] [1767997126.392697712] [global_costmap.global_costmap]: 
+[planner_server-16] 	global_costmap lifecycle node launched. 
+[planner_server-16] 	Waiting on external lifecycle transitions to activate
+[planner_server-16] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-16] [INFO] [1767997126.393378690] [global_costmap.global_costmap]: Creating Costmap
+[behavior_server-17] [INFO] [1767997126.452745162] [behavior_server]: 
+[behavior_server-17] 	behavior_server lifecycle node launched. 
+[behavior_server-17] 	Waiting on external lifecycle transitions to activate
+[behavior_server-17] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[bt_navigator-18] [INFO] [1767997126.481165978] [bt_navigator]: 
+[bt_navigator-18] 	bt_navigator lifecycle node launched. 
+[bt_navigator-18] 	Waiting on external lifecycle transitions to activate
+[bt_navigator-18] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[bt_navigator-18] [INFO] [1767997126.481302071] [bt_navigator]: Creating
+[printf-22] printf: warning: ignoring excess arguments, starting with ‘/home/douaa/Lab_moveit/install/battery_manager/lib/battery_manager/battery_manager_node’
+[printf-23] printf: warning: ignoring excess arguments, starting with ‘/home/douaa/Lab_moveit/install/mission_orchestrator/lib/mission_orchestrator/mission_orchestrator’
+[printf-24] printf: warning: ignoring excess arguments, starting with ‘/home/douaa/Lab_moveit/install/warehouse_manager/lib/warehouse_manager/stock_manager_node’
+[printf-25] printf: warning: ignoring excess arguments, starting with ‘/home/douaa/Lab_moveit/install/warehouse_manager/lib/warehouse_manager/mission_queue_manager’
+[smoother_server-15] [INFO] [1767997126.598088350] [smoother_server]: Creating smoother server
+[controller_server-14] [INFO] [1767997126.611849294] [controller_server]: Creating controller server
+[waypoint_follower-19] [INFO] [1767997126.613654329] [waypoint_follower]: 
+[waypoint_follower-19] 	waypoint_follower lifecycle node launched. 
+[waypoint_follower-19] 	Waiting on external lifecycle transitions to activate
+[waypoint_follower-19] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[waypoint_follower-19] [INFO] [1767997126.614158374] [waypoint_follower]: Creating
+[velocity_smoother-20] [INFO] [1767997126.644201661] [velocity_smoother]: 
+[velocity_smoother-20] 	velocity_smoother lifecycle node launched. 
+[velocity_smoother-20] 	Waiting on external lifecycle transitions to activate
+[velocity_smoother-20] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-14] [INFO] [1767997126.682865666] [local_costmap.local_costmap]: 
+[controller_server-14] 	local_costmap lifecycle node launched. 
+[controller_server-14] 	Waiting on external lifecycle transitions to activate
+[controller_server-14] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-14] [INFO] [1767997126.683370678] [local_costmap.local_costmap]: Creating Costmap
+[lifecycle_manager-21] [INFO] [1767997126.744042739] [lifecycle_manager_navigation]: Creating
+[lifecycle_manager-21] [INFO] [1767997126.765243700] [lifecycle_manager_navigation]: [34m[1mCreating and initializing lifecycle service clients[0m[0m
+[lifecycle_manager-21] [INFO] [1767997126.827849718] [lifecycle_manager_navigation]: [34m[1mStarting managed nodes bringup...[0m[0m
+[lifecycle_manager-21] [INFO] [1767997126.827920549] [lifecycle_manager_navigation]: [34m[1mConfiguring controller_server[0m[0m
+[controller_server-14] [INFO] [1767997126.833017724] [controller_server]: Configuring controller interface
+[controller_server-14] [INFO] [1767997126.833214760] [controller_server]: getting goal checker plugins..
+[controller_server-14] [INFO] [1767997126.833261573] [controller_server]: Controller frequency set to 30.0000Hz
+[controller_server-14] [INFO] [1767997126.833289454] [local_costmap.local_costmap]: Configuring
+[controller_server-14] [INFO] [1767997126.853828551] [local_costmap.local_costmap]: Using plugin "voxel_layer"
+[controller_server-14] [INFO] [1767997126.869021584] [local_costmap.local_costmap]: Subscribed to Topics: scan
+[controller_server-14] [INFO] [1767997126.898047864] [local_costmap.local_costmap]: Initialized plugin "voxel_layer"
+[controller_server-14] [INFO] [1767997126.898149458] [local_costmap.local_costmap]: Using plugin "inflation_layer"
+[controller_server-14] [INFO] [1767997126.904087652] [local_costmap.local_costmap]: Initialized plugin "inflation_layer"
+[controller_server-14] [ERROR] [1767997126.913415023] [local_costmap.local_costmap]: The configured inflation radius (0.350) is smaller than the computed inscribed radius (0.353) of your footprint, it is highly recommended to set inflation radius to be at least as big as the inscribed radius to avoid collisions
+[controller_server-14] [INFO] [1767997126.933550533] [controller_server]: Created progress_checker : progress_checker of type nav2_controller::SimpleProgressChecker
+[controller_server-14] [INFO] [1767997126.947834978] [controller_server]: Created goal checker : general_goal_checker of type nav2_controller::SimpleGoalChecker
+[controller_server-14] [INFO] [1767997126.948345304] [controller_server]: Controller Server has general_goal_checker  goal checkers available.
+[controller_server-14] [INFO] [1767997126.959943287] [controller_server]: Created controller : FollowPath of type dwb_core::DWBLocalPlanner
+[controller_server-14] [INFO] [1767997126.962849085] [controller_server]: Setting transform_tolerance to 0.200000
+[controller_server-14] [INFO] [1767997127.015350213] [controller_server]: Using critic "RotateToGoal" (dwb_critics::RotateToGoalCritic)
+[controller_server-14] [INFO] [1767997127.015812015] [controller_server]: Critic plugin initialized
+[controller_server-14] [INFO] [1767997127.015945589] [controller_server]: Using critic "Oscillation" (dwb_critics::OscillationCritic)
+[controller_server-14] [INFO] [1767997127.016150273] [controller_server]: Critic plugin initialized
+[controller_server-14] [INFO] [1767997127.016229036] [controller_server]: Using critic "BaseObstacle" (dwb_critics::BaseObstacleCritic)
+[controller_server-14] [INFO] [1767997127.016388062] [controller_server]: Critic plugin initialized
+[controller_server-14] [INFO] [1767997127.016533027] [controller_server]: Using critic "GoalAlign" (dwb_critics::GoalAlignCritic)
+[controller_server-14] [INFO] [1767997127.025342082] [controller_server]: Critic plugin initialized
+[controller_server-14] [INFO] [1767997127.025859637] [controller_server]: Using critic "PathAlign" (dwb_critics::PathAlignCritic)
+[controller_server-14] [INFO] [1767997127.028231518] [controller_server]: Critic plugin initialized
+[controller_server-14] [INFO] [1767997127.033286912] [controller_server]: Using critic "PathDist" (dwb_critics::PathDistCritic)
+[controller_server-14] [INFO] [1767997127.033686565] [controller_server]: Critic plugin initialized
+[controller_server-14] [INFO] [1767997127.033816340] [controller_server]: Using critic "GoalDist" (dwb_critics::GoalDistCritic)
+[controller_server-14] [INFO] [1767997127.034031355] [controller_server]: Critic plugin initialized
+[controller_server-14] [INFO] [1767997127.034091224] [controller_server]: Controller Server has FollowPath  controllers available.
+[lifecycle_manager-21] [INFO] [1767997127.078173647] [lifecycle_manager_navigation]: [34m[1mConfiguring smoother_server[0m[0m
+[smoother_server-15] [INFO] [1767997127.078432408] [smoother_server]: Configuring smoother server
+[smoother_server-15] [INFO] [1767997127.105771731] [smoother_server]: Created smoother : simple_smoother of type nav2_smoother::SimpleSmoother
+[smoother_server-15] [INFO] [1767997127.111186955] [smoother_server]: Smoother Server has simple_smoother  smoothers available.
+[lifecycle_manager-21] [INFO] [1767997127.133858336] [lifecycle_manager_navigation]: [34m[1mConfiguring planner_server[0m[0m
+[planner_server-16] [INFO] [1767997127.135916234] [planner_server]: Configuring
+[planner_server-16] [INFO] [1767997127.135959553] [global_costmap.global_costmap]: Configuring
+[planner_server-16] [INFO] [1767997127.170691980] [global_costmap.global_costmap]: Using plugin "static_layer"
+[planner_server-16] [INFO] [1767997127.196200861] [global_costmap.global_costmap]: Subscribing to the map topic (/map) with transient local durability
+[planner_server-16] [INFO] [1767997127.202219146] [global_costmap.global_costmap]: Initialized plugin "static_layer"
+[planner_server-16] [INFO] [1767997127.202851499] [global_costmap.global_costmap]: Using plugin "obstacle_layer"
+[planner_server-16] [INFO] [1767997127.204243963] [global_costmap.global_costmap]: Subscribed to Topics: scan
+[planner_server-16] [INFO] [1767997127.228295189] [global_costmap.global_costmap]: Initialized plugin "obstacle_layer"
+[planner_server-16] [INFO] [1767997127.228354301] [global_costmap.global_costmap]: Using plugin "inflation_layer"
+[planner_server-16] [INFO] [1767997127.228886821] [global_costmap.global_costmap]: Initialized plugin "inflation_layer"
+[planner_server-16] [ERROR] [1767997127.253013470] [global_costmap.global_costmap]: The configured inflation radius (0.350) is smaller than the computed inscribed radius (0.353) of your footprint, it is highly recommended to set inflation radius to be at least as big as the inscribed radius to avoid collisions
+[planner_server-16] [INFO] [1767997127.263802312] [planner_server]: Created global planner plugin GridBased of type nav2_navfn_planner/NavfnPlanner
+[planner_server-16] [INFO] [1767997127.263851708] [planner_server]: Configuring plugin GridBased of type NavfnPlanner
+[planner_server-16] [INFO] [1767997127.282318297] [planner_server]: Planner Server has GridBased  planners available.
+[lifecycle_manager-21] [INFO] [1767997127.328309717] [lifecycle_manager_navigation]: [34m[1mConfiguring behavior_server[0m[0m
+[behavior_server-17] [INFO] [1767997127.330624938] [behavior_server]: Configuring
+[behavior_server-17] [INFO] [1767997127.356866732] [behavior_server]: Creating behavior plugin spin of type nav2_behaviors/Spin
+[behavior_server-17] [INFO] [1767997127.358782980] [behavior_server]: Configuring spin
+[behavior_server-17] [INFO] [1767997127.383281435] [behavior_server]: Creating behavior plugin backup of type nav2_behaviors/BackUp
+[behavior_server-17] [INFO] [1767997127.388908377] [behavior_server]: Configuring backup
+[behavior_server-17] [INFO] [1767997127.414374190] [behavior_server]: Creating behavior plugin drive_on_heading of type nav2_behaviors/DriveOnHeading
+[behavior_server-17] [INFO] [1767997127.415201927] [behavior_server]: Configuring drive_on_heading
+[behavior_server-17] [INFO] [1767997127.442149746] [behavior_server]: Creating behavior plugin assisted_teleop of type nav2_behaviors/AssistedTeleop
+[behavior_server-17] [INFO] [1767997127.446418134] [behavior_server]: Configuring assisted_teleop
+[behavior_server-17] [INFO] [1767997127.482082804] [behavior_server]: Creating behavior plugin wait of type nav2_behaviors/Wait
+[behavior_server-17] [INFO] [1767997127.493130619] [behavior_server]: Configuring wait
+[lifecycle_manager-21] [INFO] [1767997127.522889772] [lifecycle_manager_navigation]: [34m[1mConfiguring bt_navigator[0m[0m
+[bt_navigator-18] [INFO] [1767997127.526734350] [bt_navigator]: Configuring
+[lifecycle_manager-21] [INFO] [1767997127.894990233] [lifecycle_manager_navigation]: [34m[1mConfiguring waypoint_follower[0m[0m
+[waypoint_follower-19] [INFO] [1767997127.896916756] [waypoint_follower]: Configuring
+[waypoint_follower-19] [INFO] [1767997127.944205672] [waypoint_follower]: Created waypoint_task_executor : wait_at_waypoint of type nav2_waypoint_follower::WaitAtWaypoint
+[lifecycle_manager-21] [INFO] [1767997127.960505788] [lifecycle_manager_navigation]: [34m[1mConfiguring velocity_smoother[0m[0m
+[velocity_smoother-20] [INFO] [1767997127.960955197] [velocity_smoother]: Configuring velocity smoother
+[lifecycle_manager-21] [INFO] [1767997127.994991852] [lifecycle_manager_navigation]: [34m[1mActivating controller_server[0m[0m
+[controller_server-14] [INFO] [1767997127.997354591] [controller_server]: Activating
+[controller_server-14] [INFO] [1767997127.997409650] [local_costmap.local_costmap]: Activating
+[controller_server-14] [INFO] [1767997127.997424146] [local_costmap.local_costmap]: Checking transform
+[controller_server-14] [INFO] [1767997127.997452507] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[spawner-7] [INFO] [1767997128.344933542] [spawner_gripper_controller]: waiting for service /controller_manager/list_controllers to become available...
+[lifecycle_manager-11] [INFO] [1767997128.346861476] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997128.363185285] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997128.497766945] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[spawner-5] [INFO] [1767997128.612335043] [spawner_joint_state_broadcaster]: waiting for service /controller_manager/list_controllers to become available...
+[spawner-6] [INFO] [1767997128.703029969] [spawner_arm_controller]: waiting for service /controller_manager/list_controllers to become available...
+[controller_server-14] [INFO] [1767997128.997844456] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997129.797997800] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997129.997644612] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997130.347928287] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997130.363488290] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997130.498097327] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997130.997619251] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997131.497639404] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997131.997608123] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997132.349662615] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997132.365823475] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997132.497625039] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997133.000684602] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997133.497666310] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997133.997566326] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997134.350086833] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997134.366143902] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[INFO] [printf-26]: process started with pid [11460]
+[INFO] [printf-26]: process has finished cleanly [pid 11460]
+[printf-26] printf: warning: ignoring excess arguments, starting with ‘ros2’
+[printf-26] [1;33m[AMCL-INIT][0m 
+[controller_server-14] [INFO] [1767997134.500086751] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997134.997853007] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997135.500381422] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997135.999978439] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997136.350369619] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997136.368591933] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997136.497576790] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997136.997673131] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997137.497482969] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997137.998083977] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997138.350666719] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997138.368886026] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997138.497540397] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[INFO] [printf-27]: process started with pid [11483]
+[INFO] [printf-27]: process has finished cleanly [pid 11483]
+[printf-27] 
+[printf-27] [1;32m╔════════════════════════════════════════════════════════════╗[0m
+[printf-27] [1;32m║  ✅ SYSTÈME WAREHOUSE PRÊT !                              ║[0m
+[printf-27] [1;32m╠════════════════════════════════════════════════════════════╣[0m
+[printf-27] [1;32m║  📋 COMPOSANTS ACTIFS:                                    ║[0m
+[printf-27] [1;32m║    🎮 Gazebo + Robot                                      ║[0m
+[printf-27] [1;32m║    🧭 Navigation (Nav2 + AMCL + EKF)                      ║[0m
+[printf-27] [1;32m║    🔋 Battery Manager                                     ║[0m
+[printf-27] [1;32m║    🎯 Mission Orchestrator                                ║[0m
+[printf-27] [1;32m║    📦 Stock Manager                                       ║[0m
+[printf-27] [1;32m║    ⚡ Mission Queue Manager                               ║[0m
+[printf-27] [1;32m╠════════════════════════════════════════════════════════════╣[0m
+[printf-27] [1;33m║  ⚠️  LANCER MAINTENANT (Terminal 2):                     ║[0m
+[printf-27] [1;33m║    ros2 run warehouse_manager employee_interface          ║[0m
+[printf-27] [1;32m╚════════════════════════════════════════════════════════════╝[0m
+[controller_server-14] [INFO] [1767997138.998199041] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997139.497629668] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997139.998099350] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997140.351350106] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997140.369895928] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997140.497758250] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997140.997833316] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997141.497531851] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997141.998675002] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997142.353623208] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997142.374328752] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997142.502096340] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997143.000700353] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997143.497577952] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997143.997522512] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997144.353807515] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997144.374616545] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997144.497970967] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997144.997568020] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997145.497629028] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997145.997495622] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997146.359295213] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997146.375166378] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997146.497573299] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997146.997482431] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997147.498571015] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997147.998655739] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997148.360441985] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997148.376575056] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997148.497883647] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997148.997851267] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997149.497626974] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997149.997670860] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997150.360991203] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997150.379813638] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997150.498980254] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997150.999474460] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997151.500641580] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997151.998200120] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997152.361306378] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997152.380249438] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997152.497689045] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997152.997614837] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997153.497564559] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997153.997634970] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997154.361604832] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997154.380681386] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997154.497588683] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997154.999049236] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997155.498279618] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997155.998822597] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997156.362178142] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997156.381668697] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997156.498709860] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997156.998412754] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997157.497723237] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997157.997915848] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997158.362368769] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997158.381896197] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997158.497938171] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[spawner-7] [FATAL] [1767997158.690549086] [spawner_gripper_controller]: Could not contact service /controller_manager/list_controllers
+[spawner-5] [FATAL] [1767997158.954245577] [spawner_joint_state_broadcaster]: Could not contact service /controller_manager/list_controllers
+[controller_server-14] [INFO] [1767997158.999736550] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[spawner-6] [FATAL] [1767997159.208255248] [spawner_arm_controller]: Could not contact service /controller_manager/list_controllers
+[ERROR] [spawner-7]: process has died [pid 11170, exit code 1, cmd '/opt/ros/humble/lib/controller_manager/spawner gripper_controller --controller-manager-timeout 30 --ros-args'].
+[ERROR] [spawner-5]: process has died [pid 11166, exit code 1, cmd '/opt/ros/humble/lib/controller_manager/spawner joint_state_broadcaster --controller-manager-timeout 30 --ros-args'].
+[controller_server-14] [INFO] [1767997159.497502174] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[ERROR] [spawner-6]: process has died [pid 11168, exit code 1, cmd '/opt/ros/humble/lib/controller_manager/spawner arm_controller --controller-manager-timeout 30 --ros-args'].
+[controller_server-14] [INFO] [1767997159.998322506] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997160.364579663] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997160.383900747] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997160.497551170] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997160.997675525] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997161.498205218] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997161.997886334] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997162.364776109] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997162.384105234] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997162.497538660] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997162.999659924] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997163.497731393] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997163.998191860] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997164.365504890] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997164.387389037] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997164.499945337] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997164.997559848] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997165.497774674] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997165.998642357] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997166.365804423] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997166.389689623] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997166.497575711] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997166.999022840] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997167.497537281] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997167.997726209] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997168.366087822] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997168.389893563] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997168.498066622] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997168.997594045] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997169.497620355] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997169.997624115] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997170.368124478] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997170.390459822] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997170.497847934] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997170.997952361] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997171.497483086] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997171.998624630] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997172.369361831] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997172.390704324] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997172.498557374] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997172.997607850] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997173.497714950] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997173.997569699] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997174.373905617] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997174.391489968] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997174.497783007] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997174.997595367] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997175.497674301] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997175.998952099] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997176.377478351] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997176.392894653] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997176.501363257] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997176.997619602] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997177.497572345] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997177.997489135] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997178.377849205] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997178.393128597] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997178.497651160] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997178.997662278] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997179.497671286] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997179.998862656] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997180.378470717] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997180.393591301] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997180.497939630] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997180.997932637] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997181.497490533] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997181.998405796] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997182.384579538] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997182.393890755] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997182.497557823] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997182.997569361] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997183.498401630] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997183.997471503] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997184.385208260] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997184.394105467] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997184.497729517] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997184.998687722] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997185.499331915] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997185.998638082] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997186.385978202] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997186.394366308] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997186.499689155] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997186.997816590] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997187.497781536] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997187.999569173] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997188.386871356] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997188.394873019] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997188.501950628] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997188.998409676] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997189.498306062] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997189.997844768] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997190.387127105] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997190.395102673] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997190.503829836] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997190.997579483] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997191.497954135] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997191.999399521] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997192.387310859] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997192.395403824] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997192.497510400] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997192.997829313] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997193.497524585] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997193.998019535] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997194.389544786] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997194.403639531] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997194.502533545] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997194.997616237] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997195.500035363] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997196.006055663] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997196.390435474] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997196.405010743] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997196.497814506] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997196.998023906] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997197.498218454] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997197.997554688] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997198.390709281] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997198.405259986] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997198.498128823] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997198.997579070] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997199.497717165] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997199.997593428] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997200.392143470] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997200.405776008] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997200.497488798] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997200.997982129] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997201.497468943] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997201.997833028] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997202.394615140] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997202.406273357] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997202.497541697] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997202.997796027] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997203.497609577] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997203.997512597] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997204.394956865] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997204.406876974] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997204.497689375] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997204.998386257] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997205.497496130] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997205.999878044] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997206.397111004] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997206.407505365] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997206.497965052] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997206.997725720] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997207.497631130] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997207.997602010] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997208.397431250] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997208.409128101] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
+[controller_server-14] [INFO] [1767997208.498379676] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997208.997587671] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997209.497764689] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[controller_server-14] [INFO] [1767997209.998784445] [local_costmap.local_costmap]: Timed out waiting for transform from base_link to odom to become available, tf error: Invalid frame ID "odom" passed to canTransform argument target_frame - frame does not exist
+[lifecycle_manager-11] [INFO] [1767997210.399244469] [lifecycle_manager_map]: Waiting for service map_server/get_state...
+[lifecycle_manager-13] [INFO] [1767997210.409351629] [lifecycle_manager_localization]: Waiting for service amcl/get_state...
