@@ -678,18 +678,18 @@ class EmployeeInterface(Node):
             
             # Destination
             print("📍 Destination:")
-            print("  [1] Yellow Crate Left")
-            print("  [2] Yellow Crate Right")
+            print("  [1] 📦 Yellow Crate Right - TOP")
+            print("  [2] 📦 Yellow Crate Right - MIDDLE")
             print()
             
             while True:
                 dest_choice = input("Choisissez (1 ou 2): ").strip()
                 
                 if dest_choice == '1':
-                    destination = 'yellow_crate_left'
+                    destination = 'yellow_crate_right_top'
                     break
                 elif dest_choice == '2':
-                    destination = 'yellow_crate_right'
+                    destination = 'yellow_crate_right_middle'
                     break
                 else:
                     print("❌ Choix invalide !")
@@ -732,7 +732,12 @@ class EmployeeInterface(Node):
                 color_name = color.replace('_boxes', '').replace('_', ' ').title()
                 print(f"     - {emoji} {qty}x {color_name}")
             
-            dest_name = "Yellow Crate Left" if destination == 'yellow_crate_left' else "Yellow Crate Right"
+            if destination == 'yellow_crate_right_top':
+                dest_name = "Yellow Crate Right - TOP"
+            elif destination == 'yellow_crate_right_middle':
+                dest_name = "Yellow Crate Right - MIDDLE"
+            else:
+                dest_name = destination  # Fallback
             print(f"  📍 Destination: {dest_name}")
             
             priority_emoji = '🔴' if priority == 'haute' else '🟡' if priority == 'normale' else '🟢'

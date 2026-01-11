@@ -2,15 +2,17 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.executors import MultiThreadedExecutor
 from gazebo_msgs.srv import GetEntityState
 from std_msgs.msg import String
 import json
+import threading
 
 class BoxDetector(Node):
     def __init__(self):
         super().__init__('box_detector')
         
-        # Client pour interroger Gazebo (ENTITY au lieu de MODEL)
+        # Client pour interroger Gazebo
         self.get_entity_state_client = self.create_client(
             GetEntityState,
             '/gazebo/get_entity_state'
@@ -28,6 +30,17 @@ class BoxDetector(Node):
             self.get_logger().info('⏳ Attente du service Gazebo...')
         
         self.get_logger().info('✅ Box Detector prêt !')
+        
+        # Timer pour détection périodique
+        self.timer = self.create_timer(2.0, self.detection_timer_callback)
+        
+        # Détecter une fois au démarrage (dans un thread)
+        threading.Thread(target=self.detect_boxes_at_depot, daemon=True).start()
+    
+    def detection_timer_callback(self):
+        """Appelé toutes les 2 secondes par le timer"""
+        # Lancer détection dans un thread séparé
+        threading.Thread(target=self.detect_boxes_at_depot, daemon=True).start()
     
     def detect_boxes_at_depot(self):
         """Détecte toutes les boxes sur la grande table noire (depot)"""
@@ -51,10 +64,21 @@ class BoxDetector(Node):
             request.reference_frame = ''
             
             try:
+                # Appel asynchrone
                 future = self.get_entity_state_client.call_async(request)
-                rclpy.spin_until_future_complete(self, future, timeout_sec=2.0)
                 
-                if future.result() is not None:
+                # Attendre réponse (max 1 seconde)
+                import time
+                timeout = 1.0
+                start = time.time()
+                
+                while not future.done():
+                    time.sleep(0.01)
+                    if time.time() - start > timeout:
+                        self.get_logger().warn(f'  ⚠️  Timeout pour {box_name}')
+                        break
+                
+                if future.done():
                     response = future.result()
                     
                     if response.success:
@@ -88,17 +112,17 @@ class BoxDetector(Node):
                         self.get_logger().warn(f'  ✗ {box_name} non trouvée')
                         
             except Exception as e:
-                self.get_logger().error(f'Erreur pour {box_name}: {e}')
+                self.get_logger().error(f'  ❌ Erreur pour {box_name}: {e}')
         
         # Publier les résultats
+        msg = String()
+        msg.data = json.dumps(detected_boxes)
+        self.detected_boxes_pub.publish(msg)
+        
         if detected_boxes:
-            msg = String()
-            msg.data = json.dumps(detected_boxes)
-            self.detected_boxes_pub.publish(msg)
-            
-            self.get_logger().info(
-                f'\n📦 {len(detected_boxes)} box(es) détectée(s) !'
-            )
+            self.get_logger().info(f'📦 {len(detected_boxes)} box(es) détectée(s) !')
+        else:
+            self.get_logger().warn(f'⚠️  AUCUNE box détectée cette fois !')
         
         return detected_boxes
 
@@ -106,13 +130,12 @@ def main():
     rclpy.init()
     detector = BoxDetector()
     
+    # Utiliser MultiThreadedExecutor pour gérer les threads
+    executor = MultiThreadedExecutor()
+    executor.add_node(detector)
+    
     try:
-        # Détecter les boxes
-        boxes = detector.detect_boxes_at_depot()
-        
-        # Garder le node actif
-        rclpy.spin(detector)
-        
+        executor.spin()
     except KeyboardInterrupt:
         pass
     finally:

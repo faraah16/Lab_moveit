@@ -33,7 +33,32 @@ class MissionOrchestrator(Node):
         self.get_logger().info('🧭 Initialisation du Navigation Client...')
         self.nav_client = NavigationClient(orchestrator=self)
 
-
+        # ═══════════════════════════════════════════════════════
+        # PICK & PLACE INTERFACE
+        # ═══════════════════════════════════════════════════════
+        self.pick_place_command_pub = self.create_publisher(
+            String,
+            '/pick_place/command',
+            10
+        )
+        
+        self.pick_place_status = 'idle'
+        self.pick_place_status_sub = self.create_subscription(
+            String,
+            '/pick_place/status',
+            self.pick_place_status_callback,
+            10
+        )
+        
+        self.detected_boxes = []
+        self.detected_boxes_sub = self.create_subscription(
+            String,
+            '/detected_boxes',
+            self.detected_boxes_callback,
+            10
+        )
+        
+        self.get_logger().info('🦾 Pick & Place interface initialisée')
         # ═══════════════════════════════════════════════════════
         # NOUVEAU : TF Buffer PERSISTANT
         # ═══════════════════════════════════════════════════════
@@ -160,6 +185,91 @@ class MissionOrchestrator(Node):
             self.get_logger().warn('   🔌 Navigation PRIORITAIRE vers charging_zone...')
             self.go_to_zone('charging_zone')
     
+    def pick_place_status_callback(self, msg):
+        """Reçoit status du pick & place"""
+        try:
+            status_data = yaml.safe_load(msg.data)
+            self.pick_place_status = status_data.get('status', 'unknown')
+            
+            if self.pick_place_status == 'error':
+                self.get_logger().error(f"❌ Pick&Place error: {status_data.get('message', '')}")
+        except:
+            pass
+    
+    def detected_boxes_callback(self, msg):
+        """Reçoit boxes détectées"""
+        try:
+            import json
+            self.detected_boxes = json.loads(msg.data)
+            self.get_logger().info(f'📦 {len(self.detected_boxes)} boxes reçues par orchestrator')
+        except:
+            pass
+    
+    def send_pick_command(self, color):
+        """Envoie commande PICK et attend complétion"""
+        self.get_logger().info(f'   📤 Commande PICK ({color})...')
+        
+        command = {
+            'action': 'pick',
+            'color': color
+        }
+        
+        msg = String()
+        msg.data = yaml.dump(command)
+        self.pick_place_command_pub.publish(msg)
+        
+        # Attendre complétion (max 30s)
+        self.pick_place_status = 'picking'
+        timeout = 30
+        start_time = time.time()
+        
+        while self.pick_place_status == 'picking':
+            rclpy.spin_once(self, timeout_sec=0.1)
+            time.sleep(0.1)
+            
+            if time.time() - start_time > timeout:
+                self.get_logger().error('   ❌ Timeout PICK')
+                return False
+        
+        if self.pick_place_status == 'pick_complete':
+            self.get_logger().info('   ✅ PICK réussi')
+            return True
+        else:
+            self.get_logger().error(f'   ❌ PICK échoué: {self.pick_place_status}')
+            return False
+    
+    def send_place_command(self, color):
+        """Envoie commande PLACE et attend complétion"""
+        self.get_logger().info(f'   📤 Commande PLACE ({color})...')
+        
+        command = {
+            'action': 'place',
+            'color': color
+        }
+        
+        msg = String()
+        msg.data = yaml.dump(command)
+        self.pick_place_command_pub.publish(msg)
+        
+        # Attendre complétion (max 30s)
+        self.pick_place_status = 'placing'
+        timeout = 30
+        start_time = time.time()
+        
+        while self.pick_place_status == 'placing':
+            rclpy.spin_once(self, timeout_sec=0.1)
+            time.sleep(0.1)
+            
+            if time.time() - start_time > timeout:
+                self.get_logger().error('   ❌ Timeout PLACE')
+                return False
+        
+        if self.pick_place_status == 'place_complete':
+            self.get_logger().info('   ✅ PLACE réussi')
+            return True
+        else:
+            self.get_logger().error(f'   ❌ PLACE échoué: {self.pick_place_status}')
+            return False
     def publish_current_zone(self, zone_name):
         """Publie la zone actuelle"""
         self.current_zone = zone_name
@@ -367,7 +477,7 @@ class MissionOrchestrator(Node):
                 self.get_logger().info(f'   📍 Phase 1: Rotation avec feedback temps réel')
 
                 tolerance = 0.05
-                max_iterations = 800
+                max_iterations = 2000
                 iteration = 0
 
                 while iteration < max_iterations:
@@ -464,7 +574,7 @@ class MissionOrchestrator(Node):
                         self.get_logger().warn(f'   ⚠️  ERREUR > 3° ! Rotation corrective...')
                         
                         # ROTATION CORRECTIVE (même mécanisme mais plus court)
-                        max_correction_iterations = 200
+                        max_correction_iterations = 800
                         correction_iteration = 0
                         
                         while correction_iteration < max_correction_iterations:
@@ -839,11 +949,15 @@ class MissionOrchestrator(Node):
             self.get_logger().error(f'❌ Erreur traitement mission: {e}')
     
     def execute_arrival_mission(self, mission):
-        """Exécute une mission de tri d'arrivage"""
-        self.get_logger().info('📦 MISSION: Tri d\'arrivage')
-        self.get_logger().info('   → Navigation vers depot_table')
+        """Exécute une mission de tri d'arrivage AVEC PICK & PLACE RÉEL"""
+        self.get_logger().info('')
+        self.get_logger().info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        self.get_logger().info('📦 MISSION: Tri d\'arrivage RÉEL')
+        self.get_logger().info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        self.get_logger().info('')
         
-        # Aller au depot pour récupérer les boxes
+        # 1. Navigation vers depot_table
+        self.get_logger().info('🚗 ÉTAPE 1: Navigation vers depot_table')
         success = self.go_to_zone('depot_table')
         
         if not success:
@@ -851,20 +965,77 @@ class MissionOrchestrator(Node):
             return False
         
         self.get_logger().info('✅ Arrivé au depot_table')
+        time.sleep(2.0)
         
-        # Simuler le tri (attente 5s)
-        self.get_logger().info('🔄 Tri des boxes en cours...')
-        import time
-        time.sleep(5)
+        # 2. Attendre détection des boxes
+        self.get_logger().info('🔍 ÉTAPE 2: Attente détection boxes...')
+        timeout = 10
+        start = time.time()
         
-        # TODO: Implémenter pick & place avec MoveIt2
-        # Pour l'instant, on simule le tri
+        while len(self.detected_boxes) == 0:
+            rclpy.spin_once(self, timeout_sec=0.1)
+            time.sleep(0.1)
+            
+            if time.time() - start > timeout:
+                self.get_logger().error('❌ Timeout détection boxes')
+                return False
         
-        arrival_data = mission.get('data', {})
-        total_boxes = mission.get('total_boxes', 0)
+        self.get_logger().info(f'✅ {len(self.detected_boxes)} boxes détectées')
         
-        self.get_logger().info(f'✅ Tri de {total_boxes} boxes terminé (simulé)')
-        self.get_logger().info('💡 Les boxes sont maintenant sur leurs tables respectives')
+        # 3. Trier chaque box
+        self.get_logger().info('')
+        self.get_logger().info('🦾 ÉTAPE 3: Tri des boxes')
+        self.get_logger().info('')
+        
+        for i, box in enumerate(self.detected_boxes, 1):
+            color = box['color']
+            name = box['name']
+            
+            self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            self.get_logger().info(f'📦 Box {i}/{len(self.detected_boxes)}: {name} ({color})')
+            self.get_logger().info(f'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+            
+            # a) PICK
+            self.get_logger().info('🦾 Phase A: PICK')
+            success_pick = self.send_pick_command(color)
+            
+            if not success_pick:
+                self.get_logger().error(f'❌ PICK échoué pour {name}')
+                continue
+            
+            # b) NAVIGATION vers table couleur
+            table_name = f'{color}_table'
+            self.get_logger().info(f'🚗 Phase B: Navigation vers {table_name}')
+            success_nav = self.go_to_zone(table_name)
+            
+            if not success_nav:
+                self.get_logger().error(f'❌ Navigation échouée vers {table_name}')
+                continue
+            
+            time.sleep(1.0)
+            
+            # c) PLACE
+            self.get_logger().info('🦾 Phase C: PLACE')
+            success_place = self.send_place_command(color)
+            
+            if not success_place:
+                self.get_logger().error(f'❌ PLACE échoué pour {name}')
+                continue
+            
+            self.get_logger().info(f'✅ {name} trié avec succès !')
+            self.get_logger().info('')
+            
+            # d) RETOUR vers depot_table pour prochaine box
+            if i < len(self.detected_boxes):
+                self.get_logger().info('🔄 Retour vers depot_table...')
+                self.go_to_zone('depot_table')
+                time.sleep(1.0)
+        
+        self.get_logger().info('')
+        self.get_logger().info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        self.get_logger().info('✅ TRI D\'ARRIVAGE TERMINÉ !')
+        self.get_logger().info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        self.get_logger().info('')
         
         return True
     
@@ -1005,8 +1176,13 @@ class MissionOrchestrator(Node):
         
         # APRÈS (nouveau code)
         # Offset RÉDUIT pour permettre la manipulation
-        if zone_info["function"] in ["pick_colored_box", "place_boxes"]:
-            # Tables: reculer de 0.2m (20cm) pour approche proche
+        if zone_name == 'depot_table':
+            # ⭐ DEPOT: Approche modérée (compromis distance/nav)
+            y -= 0.3  # 30cm plus proche
+            self.get_logger().info(f'   🔧 Offset DEPOT: -0.3m sur Y')
+            self.get_logger().info(f'   📏 Position: ({x:.2f}, {y:.2f})')
+            
+        elif zone_info["function"] in ["pick_colored_box", "place_boxes"]:
             y += 0.2
             self.get_logger().info(f'   🔧 Offset navigation: +0.2m sur Y')
             self.get_logger().info(f'   📏 Distance robot→table: ~0.23m')

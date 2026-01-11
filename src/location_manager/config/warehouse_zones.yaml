@@ -100,36 +100,7 @@ zones:
     function: "place_boxes"
     description: "Table de dépôt pour stockage des colis"
 
-  # Caisses jaunes (stockage) - PAS DE CHANGEMENT
-  yellow_crate_left_top:
-    name: "Yellow Crate Left Top"
-    position:
-      x: -2.8
-      y: 1.8
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.0
-      w: 1.0
-    marker_id: 6
-    function: "storage"
-    description: "Caisse de stockage gauche haute"
 
-  yellow_crate_left_middle:
-    name: "Yellow Crate Left Middle"
-    position:
-      x: -2.8
-      y: -0.7
-      z: 0.0
-    orientation:
-      x: 0.0
-      y: 0.0
-      z: 0.0
-      w: 1.0
-    marker_id: 7
-    function: "storage"
-    description: "Caisse de stockage gauche milieu"
 
   yellow_crate_right_top:
     name: "Yellow Crate Right Top"
@@ -184,8 +155,6 @@ zone_groups:
     - blue_table
     - yellow_table
   storage_crates:
-    - yellow_crate_left_top
-    - yellow_crate_left_middle
     - yellow_crate_right_top
     - yellow_crate_right_middle
   operational_zones:
