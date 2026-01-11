@@ -1178,7 +1178,7 @@ class MissionOrchestrator(Node):
         # Offset RÉDUIT pour permettre la manipulation
         if zone_name == 'depot_table':
             # ⭐ DEPOT: Approche modérée (compromis distance/nav)
-            y -= 0.3  # 30cm plus proche
+            y -= 1.2  # 30cm plus proche
             self.get_logger().info(f'   🔧 Offset DEPOT: -0.3m sur Y')
             self.get_logger().info(f'   📏 Position: ({x:.2f}, {y:.2f})')
             
